@@ -5,7 +5,7 @@
 [![Travis Build](https://travis-ci.com/testmonitor/asana-client.svg?branch=master)](https://travis-ci.com/testmonitor/asana-client)
 [![Code Coverage](https://scrutinizer-ci.com/g/testmonitor/asana-client/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/testmonitor/asana-client/?branch=master)
 [![Code Quality](https://scrutinizer-ci.com/g/testmonitor/asana-client/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/testmonitor/asana-client/?branch=master)
-[![StyleCI](https://styleci.io/repos/222957448/shield)](https://styleci.io/repos/222957448)
+[![StyleCI](https://styleci.io/repos/223037397/shield)](https://styleci.io/repos/223037397)
 [![License](https://poser.pugx.org/testmonitor/asana-client/license)](https://packagist.org/packages/testmonitor/asana-client)
 
 This package provides a very basic, convenient, and unified wrapper for the [Official Asana PHP client library](https://github.com/Asana/php-asana). 

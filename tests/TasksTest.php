@@ -32,7 +32,7 @@ class TasksTest extends TestCase
 
         $this->project = (object) ['gid' => '10', 'Project'];
 
-        $this->task = (object) ['gid' => '1', 'name' => 'Task', 'notes' => 'Notes'];
+        $this->task = (object) ['gid' => '1', 'name' => 'Task', 'notes' => 'Notes', 'completed' => false];
 
         $this->tasks = Mockery::mock('\Asana\Iterator\ItemIterator');
         $this->tasks->shouldReceive('rewind')->andReturnNull();
@@ -162,5 +162,77 @@ class TasksTest extends TestCase
 
         // When
         $task = $asana->task('unknown');
+    }
+
+    /** @test */
+    public function it_should_create_a_task()
+    {
+        // Given
+        $asana = new Client(['clientId' => 1, 'clientSecret' => 'secret', 'redirectUrl' => 'none'], $this->token);
+
+        $asana->setClient($service = Mockery::mock('\Asana\Client'));
+
+        $service->tasks = Mockery::mock('\Asana\Resources\Tasks');
+        $service->tasks->shouldReceive('create')->once()->with([
+            'completed' => $this->task->completed,
+            'name' => $this->task->name,
+            'html_notes' => "<body>{$this->task->notes}</body>",
+            'projects' => [$this->project->gid],
+        ], ['opt_fields' => $this->optFields])->andReturn(
+            $this->task
+        );
+
+        // When
+        $task = $asana->createTask(new Task($this->task->completed, $this->task->name, $this->task->notes, $this->project->gid));
+
+        // Then
+        $this->assertInstanceOf(Task::class, $task);
+        $this->assertEquals($this->task->gid, $task->gid);
+    }
+
+    /** @test */
+    public function it_should_throw_an_unauthorized_exception_when_client_lacks_authorization_to_create_a_task()
+    {
+        // Given
+        $asana = new Client(['clientId' => 1, 'clientSecret' => 'secret', 'redirectUrl' => 'none'], $this->token);
+
+        $asana->setClient($service = Mockery::mock('\Asana\Client'));
+
+        $service->tasks = Mockery::mock('\Asana\Resources\Tasks');
+        $service->tasks->shouldReceive('create')->once()->with([
+            'completed' => $this->task->completed,
+            'name' => $this->task->name,
+            'html_notes' => "<body>{$this->task->notes}</body>",
+            'projects' => [$this->project->gid],
+        ], ['opt_fields' => $this->optFields])
+            ->andThrow(new NoAuthorizationError([]));
+
+        $this->expectException(UnauthorizedException::class);
+
+        // When
+        $task = $asana->createTask(new Task($this->task->completed, $this->task->name, $this->task->notes, $this->project->gid));
+    }
+
+    /** @test */
+    public function it_should_throw_a_notfound_exception_when_client_cannot_find_project_to_create_task_in()
+    {
+        // Given
+        $asana = new Client(['clientId' => 1, 'clientSecret' => 'secret', 'redirectUrl' => 'none'], $this->token);
+
+        $asana->setClient($service = Mockery::mock('\Asana\Client'));
+
+        $service->tasks = Mockery::mock('\Asana\Resources\Tasks');
+        $service->tasks->shouldReceive('create')->once()->with([
+            'completed' => $this->task->completed,
+            'name' => $this->task->name,
+            'html_notes' => "<body>{$this->task->notes}</body>",
+            'projects' => ['unknown'],
+        ], ['opt_fields' => $this->optFields])
+            ->andThrow(new NotFoundError([]));
+
+        $this->expectException(NotFoundException::class);
+
+        // When
+        $task = $asana->createTask(new Task($this->task->completed, $this->task->name, $this->task->notes, 'unknown'));
     }
 }

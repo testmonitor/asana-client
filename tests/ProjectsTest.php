@@ -2,13 +2,13 @@
 
 namespace TestMonitor\Asana\Tests;
 
-use Asana\Errors\NotFoundError;
 use Mockery;
 use TestMonitor\Asana\Client;
+use Asana\Errors\NotFoundError;
 use PHPUnit\Framework\TestCase;
 use Asana\Errors\NoAuthorizationError;
-use TestMonitor\Asana\Exceptions\NotFoundException;
 use TestMonitor\Asana\Resources\Project;
+use TestMonitor\Asana\Exceptions\NotFoundException;
 use TestMonitor\Asana\Exceptions\UnauthorizedException;
 
 class ProjectsTest extends TestCase

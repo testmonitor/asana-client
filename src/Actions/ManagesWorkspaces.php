@@ -18,8 +18,8 @@ trait ManagesWorkspaces
     /**
      * Get a list of of workspaces.
      *
-     * @return \TestMonitor\Asana\Resources\Workspace[]
      * @throws \TestMonitor\Asana\Exceptions\UnauthorizedException
+     * @return \TestMonitor\Asana\Resources\Workspace[]
      */
     public function workspaces()
     {

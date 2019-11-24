@@ -3,7 +3,6 @@
 namespace TestMonitor\Asana;
 
 use Asana\Client as AsanaClient;
-use Asana\Dispatcher\Dispatcher;
 use Asana\Dispatcher\OAuthDispatcher;
 use Asana\Dispatcher\AccessTokenDispatcher;
 use TestMonitor\Asana\Exceptions\TokenExpiredException;

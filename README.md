@@ -37,8 +37,9 @@ You're all set up now!
 
 ## Usage
 
-This client only supports OAuth authentication. You'll need an Asana application to proceed. If you haven't done so,
-please read up with the [Asana authentication docs](https://developers.asana.com/docs/#authentication-basics).
+This client only supports **oAuth authentication**. You'll need an Asana application to proceed. If you haven't done so,
+please read up with the [Asana authentication docs](https://developers.asana.com/docs/#authentication-basics) on how
+to create an application.
 
 When your Asana application is up and running, start with the oAuth authorization:
 
@@ -55,8 +56,8 @@ header('Location: ' . $asana->authorizationUrl());
 exit();
 ```
 
-This will redirect the user to a page asking confirmation for Asana access. Make sure your redirectUrl points to
-the following code:
+This will redirect the user to a page asking confirmation for your app getting access to Asana. Make sure your redirectUrl points
+back to your app. This URL should point to the following code:
 
 ```php
 $oauth = [
@@ -70,7 +71,7 @@ $asana = new \TestMonitor\Asana\Client($oauth, new \TestMonitor\Asana\Token());
 $token = $asana->fetchToken($_REQUEST['code']);
 ```
 
-When everything went ok, you should have an access token (within the Token object). It will be valid for one hour.
+When everything went ok, you should have an access token (available through Token object). It will be valid for **one hour**.
 After that, you'll have to refresh the token to regain access:
 
 ```php
@@ -84,7 +85,7 @@ if ($token->expired()) {
 }
 ```
 
-The new token will be valid again for the coming hour. 
+The new token will be valid again for the next hour. 
 
 ## Examples
 

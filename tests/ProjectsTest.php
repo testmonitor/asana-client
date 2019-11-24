@@ -2,10 +2,12 @@
 
 namespace TestMonitor\Asana\Tests;
 
+use Asana\Errors\NotFoundError;
 use Mockery;
 use TestMonitor\Asana\Client;
 use PHPUnit\Framework\TestCase;
 use Asana\Errors\NoAuthorizationError;
+use TestMonitor\Asana\Exceptions\NotFoundException;
 use TestMonitor\Asana\Resources\Project;
 use TestMonitor\Asana\Exceptions\UnauthorizedException;
 
@@ -68,7 +70,7 @@ class ProjectsTest extends TestCase
     }
 
     /** @test */
-    public function it_should_throw_an_exception_when_client_fails_to_get_a_list_of_projects()
+    public function it_should_throw_an_unauthorized_exception_when_client_lacks_authorization_to_get_a_list_of_projects()
     {
         // Given
         $asana = new Client(['clientId' => 1, 'clientSecret' => 'secret', 'redirectUrl' => 'none'], $this->token);
@@ -82,6 +84,23 @@ class ProjectsTest extends TestCase
 
         // When
         $projects = $asana->projects($this->workspace->gid);
+    }
+
+    /** @test */
+    public function it_should_throw_a_notfound_exception_when_client_cannot_get_a_list_of_projects_for_an_unknown_workspace()
+    {
+        // Given
+        $asana = new Client(['clientId' => 1, 'clientSecret' => 'secret', 'redirectUrl' => 'none'], $this->token);
+
+        $asana->setClient($service = Mockery::mock('\Asana\Client'));
+
+        $service->projects = Mockery::mock('\Asana\Resources\Projects');
+        $service->projects->shouldReceive('findByWorkspace')->once()->with('unknown')->andThrow(new NotFoundError([]));
+
+        $this->expectException(NotFoundException::class);
+
+        // When
+        $projects = $asana->projects('unknown');
     }
 
     /** @test */
@@ -106,7 +125,7 @@ class ProjectsTest extends TestCase
     }
 
     /** @test */
-    public function it_should_throw_an_exception_when_client_fails_to_get_a_single_project()
+    public function it_should_throw_an_unauthorized_exception_when_client_lacks_authorization_to_get_a_project()
     {
         // Given
         $asana = new Client(['clientId' => 1, 'clientSecret' => 'secret', 'redirectUrl' => 'none'], $this->token);
@@ -120,5 +139,22 @@ class ProjectsTest extends TestCase
 
         // When
         $project = $asana->project($this->project->gid);
+    }
+
+    /** @test */
+    public function it_should_throw_a_notfound_exception_when_client_cannot_find_project()
+    {
+        // Given
+        $asana = new Client(['clientId' => 1, 'clientSecret' => 'secret', 'redirectUrl' => 'none'], $this->token);
+
+        $asana->setClient($service = Mockery::mock('\Asana\Client'));
+
+        $service->projects = Mockery::mock('\Asana\Resources\Projects');
+        $service->projects->shouldReceive('findById')->once()->with('unknown')->andThrow(new NotFoundError([]));
+
+        $this->expectException(NotFoundException::class);
+
+        // When
+        $project = $asana->project('unknown');
     }
 }

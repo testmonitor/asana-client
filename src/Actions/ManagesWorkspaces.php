@@ -18,9 +18,8 @@ trait ManagesWorkspaces
     /**
      * Get a list of of workspaces.
      *
-     * @throws \TestMonitor\Asana\Exceptions\NotFoundException
-     * @throws \TestMonitor\Asana\Exceptions\UnauthorizedException
      * @return \TestMonitor\Asana\Resources\Workspace[]
+     * @throws \TestMonitor\Asana\Exceptions\UnauthorizedException
      */
     public function workspaces()
     {
@@ -32,8 +31,6 @@ trait ManagesWorkspaces
             }, iterator_to_array($workspaces));
         } catch (NoAuthorizationError | InvalidTokenError | ForbiddenError $exception) {
             throw new UnauthorizedException($exception->getMessage());
-        } catch (NotFoundError $exception) {
-            throw new NotFoundException($exception->getMessage());
         }
     }
 

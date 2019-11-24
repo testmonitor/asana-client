@@ -3,6 +3,7 @@
 namespace TestMonitor\Asana;
 
 use Asana\Client as AsanaClient;
+use Asana\Dispatcher\Dispatcher;
 use Asana\Dispatcher\OAuthDispatcher;
 use Asana\Dispatcher\AccessTokenDispatcher;
 use TestMonitor\Asana\Exceptions\TokenExpiredException;
@@ -40,12 +41,17 @@ class Client
      * @param array $credentials
      * @param \TestMonitor\Asana\Token $token
      * @param array $options
+     * @param OAuthDispatcher|null $dispatcher
      */
-    public function __construct(array $credentials, Token $token = null, array $options = [])
-    {
+    public function __construct(
+        array $credentials,
+        Token $token = null,
+        array $options = [],
+        OAuthDispatcher $dispatcher = null
+    ) {
         $this->token = $token;
 
-        $this->dispatcher = new OAuthDispatcher([
+        $this->dispatcher = $dispatcher ?? new OAuthDispatcher([
             'client_id' => $credentials['clientId'],
             'client_secret' => $credentials['clientSecret'],
             'redirect_uri' => $credentials['redirectUrl'],

@@ -3,6 +3,7 @@
 namespace TestMonitor\Asana\Tests;
 
 use Mockery;
+use TestMonitor\Asana\Client;
 use TestMonitor\Asana\Token;
 use PHPUnit\Framework\TestCase;
 
@@ -31,11 +32,16 @@ class TokenTest extends TestCase
         // Given
         $token = new Token('12345', '67890', time() - 60);
 
+        $asana = new Client(['clientId' => 1, 'clientSecret' => 'secret', 'redirectUrl' => 'none'], $token);
+
+        $asana->setClient($service = Mockery::mock('\Asana\Client'));
+
         // When
-        $expired = $token->expired();
+        $expired = $asana->tokenExpired();
 
         // Then
         $this->assertInstanceOf(Token::class, $token);
+        $this->assertTrue($token->expired());
         $this->assertTrue($expired);
     }
 }

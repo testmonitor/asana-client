@@ -3,8 +3,8 @@
 namespace TestMonitor\Asana\Tests;
 
 use Mockery;
-use TestMonitor\Asana\Client;
 use TestMonitor\Asana\Token;
+use TestMonitor\Asana\Client;
 use PHPUnit\Framework\TestCase;
 
 class TokenTest extends TestCase

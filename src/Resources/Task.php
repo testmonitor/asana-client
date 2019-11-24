@@ -14,7 +14,7 @@ class Task extends Resource
     /**
      * The state of the task.
      *
-     * @var boolean
+     * @var bool
      */
     public $completed;
 

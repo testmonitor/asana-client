@@ -4,7 +4,6 @@ namespace TestMonitor\Asana;
 
 class Token
 {
-
     /**
      * @var string
      */

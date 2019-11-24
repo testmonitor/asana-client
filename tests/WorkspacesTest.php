@@ -63,6 +63,7 @@ class WorkspacesTest extends TestCase
         $this->assertCount(1, $workspaces);
         $this->assertInstanceOf(Workspace::class, $workspaces[0]);
         $this->assertEquals($this->workspace->gid, $workspaces[0]->gid);
+        $this->assertIsArray($workspaces[0]->toArray());
     }
 
     /** @test */

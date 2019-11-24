@@ -3,6 +3,8 @@
 namespace TestMonitor\Asana\Tests;
 
 use Mockery;
+use TestMonitor\Asana\Exceptions\NotFoundException;
+use TestMonitor\Asana\Exceptions\TokenExpiredException;
 use TestMonitor\Asana\Token;
 use TestMonitor\Asana\Client;
 use PHPUnit\Framework\TestCase;
@@ -43,5 +45,21 @@ class TokenTest extends TestCase
         $this->assertInstanceOf(Token::class, $token);
         $this->assertTrue($token->expired());
         $this->assertTrue($expired);
+    }
+
+    /** @test */
+    public function it_should_not_provide_a_client_with_an_expired_token()
+    {
+        // Given
+        $token = new Token('12345', '67890', time() - 60);
+
+        $asana = new Client(['clientId' => 1, 'clientSecret' => 'secret', 'redirectUrl' => 'none'], $token);
+
+        $asana->setClient($service = Mockery::mock('\Asana\Client'));
+
+        $this->expectException(TokenExpiredException::class);
+
+        // When
+        $asana = $asana->workspaces();
     }
 }

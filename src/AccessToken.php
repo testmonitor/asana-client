@@ -2,7 +2,7 @@
 
 namespace TestMonitor\Asana;
 
-class Token
+class AccessToken
 {
     /**
      * @var string

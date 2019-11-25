@@ -27,7 +27,7 @@ class TasksTest extends TestCase
     {
         parent::setUp();
 
-        $this->token = Mockery::mock('\TestMonitor\Asana\Token');
+        $this->token = Mockery::mock('\TestMonitor\Asana\AccessToken');
         $this->token->shouldReceive('expired')->andReturnFalse();
 
         $this->project = (object) ['gid' => '10', 'Project'];

@@ -3,9 +3,9 @@
 namespace TestMonitor\Asana\Tests;
 
 use Mockery;
-use TestMonitor\Asana\Token;
 use TestMonitor\Asana\Client;
 use PHPUnit\Framework\TestCase;
+use TestMonitor\Asana\AccessToken;
 use TestMonitor\Asana\Exceptions\TokenExpiredException;
 
 class OauthTest extends TestCase
@@ -19,10 +19,10 @@ class OauthTest extends TestCase
     public function it_should_create_a_token()
     {
         // When
-        $token = new Token('12345', '67890', time() + 3600);
+        $token = new AccessToken('12345', '67890', time() + 3600);
 
         // Then
-        $this->assertInstanceOf(Token::class, $token);
+        $this->assertInstanceOf(AccessToken::class, $token);
         $this->assertIsArray($token->toArray());
         $this->assertFalse($token->expired());
     }
@@ -31,7 +31,7 @@ class OauthTest extends TestCase
     public function it_should_detect_an_expired_token()
     {
         // Given
-        $token = new Token('12345', '67890', time() - 60);
+        $token = new AccessToken('12345', '67890', time() - 60);
 
         $asana = new Client(['clientId' => 1, 'clientSecret' => 'secret', 'redirectUrl' => 'none'], $token);
 
@@ -41,7 +41,7 @@ class OauthTest extends TestCase
         $expired = $asana->tokenExpired();
 
         // Then
-        $this->assertInstanceOf(Token::class, $token);
+        $this->assertInstanceOf(AccessToken::class, $token);
         $this->assertTrue($token->expired());
         $this->assertTrue($expired);
     }
@@ -50,7 +50,7 @@ class OauthTest extends TestCase
     public function it_should_not_provide_a_client_with_an_expired_token()
     {
         // Given
-        $token = new Token('12345', '67890', time() - 60);
+        $token = new AccessToken('12345', '67890', time() - 60);
 
         $asana = new Client(['clientId' => 1, 'clientSecret' => 'secret', 'redirectUrl' => 'none'], $token);
 
@@ -66,7 +66,7 @@ class OauthTest extends TestCase
     public function it_should_provide_an_authorization_url()
     {
         // Given
-        $asana = new Client(['clientId' => 1, 'clientSecret' => 'secret', 'redirectUrl' => 'none'], new Token(), [], $dispatcher = Mockery::mock('\Asana\Dispatcher\OAuthDispatcher'));
+        $asana = new Client(['clientId' => 1, 'clientSecret' => 'secret', 'redirectUrl' => 'none'], new AccessToken(), [], $dispatcher = Mockery::mock('\Asana\Dispatcher\OAuthDispatcher'));
 
         $state = 'somestate';
 
@@ -85,7 +85,7 @@ class OauthTest extends TestCase
         // Given
         $dispatcher = Mockery::mock('\Asana\Dispatcher\OAuthDispatcher');
 
-        $newToken = new Token('12345', '567890', time() + 3600);
+        $newToken = new AccessToken('12345', '567890', time() + 3600);
 
         $dispatcher->accessToken = $newToken->accessToken;
         $dispatcher->refreshToken = $newToken->refreshToken;
@@ -95,13 +95,13 @@ class OauthTest extends TestCase
 
         $dispatcher->shouldReceive('fetchToken')->once()->andReturn($newToken->accessToken);
 
-        $asana = new Client(['clientId' => 1, 'clientSecret' => 'secret', 'redirectUrl' => 'none'], new Token(), [], $dispatcher);
+        $asana = new Client(['clientId' => 1, 'clientSecret' => 'secret', 'redirectUrl' => 'none'], new AccessToken(), [], $dispatcher);
 
         // When
         $token = $asana->fetchToken($code);
 
         // Then
-        $this->assertInstanceOf(Token::class, $token);
+        $this->assertInstanceOf(AccessToken::class, $token);
         $this->assertFalse($token->expired());
         $this->assertEquals($token->accessToken, $newToken->accessToken);
         $this->assertEquals($token->refreshToken, $newToken->refreshToken);
@@ -111,11 +111,11 @@ class OauthTest extends TestCase
     public function it_should_refresh_a_token()
     {
         // Given
-        $oldToken = new Token('12345', '567890', time() - 3600);
+        $oldToken = new AccessToken('12345', '567890', time() - 3600);
 
         $asana = new Client(['clientId' => 1, 'clientSecret' => 'secret', 'redirectUrl' => 'none'], $oldToken, [], $dispatcher = Mockery::mock('\Asana\Dispatcher\OAuthDispatcher'));
 
-        $newToken = new Token('23456', '678901', time() + 3600);
+        $newToken = new AccessToken('23456', '678901', time() + 3600);
 
         $dispatcher->accessToken = $newToken->accessToken;
         $dispatcher->refreshToken = $newToken->refreshToken;
@@ -127,7 +127,7 @@ class OauthTest extends TestCase
         $token = $asana->refreshToken();
 
         // Then
-        $this->assertInstanceOf(Token::class, $token);
+        $this->assertInstanceOf(AccessToken::class, $token);
         $this->assertFalse($token->expired());
         $this->assertEquals($token->accessToken, $newToken->accessToken);
         $this->assertEquals($token->refreshToken, $newToken->refreshToken);

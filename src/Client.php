@@ -15,7 +15,7 @@ class Client
         Actions\ManagesWorkspaces;
 
     /**
-     * @var \TestMonitor\Asana\Token
+     * @var \TestMonitor\Asana\AccessToken
      */
     protected $token;
 
@@ -38,13 +38,13 @@ class Client
      * Create a new client instance.
      *
      * @param array $credentials
-     * @param \TestMonitor\Asana\Token $token
+     * @param \TestMonitor\Asana\AccessToken $token
      * @param array $options
      * @param OAuthDispatcher|null $dispatcher
      */
     public function __construct(
         array $credentials,
-        Token $token = null,
+        AccessToken $token = null,
         array $options = [],
         OAuthDispatcher $dispatcher = null
     ) {
@@ -75,13 +75,14 @@ class Client
      * Fetch the access and refresh token based on the authorization code.
      *
      * @param string $code
-     * @return \TestMonitor\Asana\Token
+     *
+     * @return \TestMonitor\Asana\AccessToken
      */
-    public function fetchToken(string $code): Token
+    public function fetchToken(string $code): AccessToken
     {
         $accessToken = $this->dispatcher->fetchToken($code);
 
-        $this->token = new Token($accessToken, $this->dispatcher->refreshToken, $this->dispatcher->expiresIn + time());
+        $this->token = new AccessToken($accessToken, $this->dispatcher->refreshToken, $this->dispatcher->expiresIn + time());
 
         return $this->token;
     }
@@ -89,14 +90,14 @@ class Client
     /**
      * Refresh the current access token.
      *
-     * @throws \Exception
-     * @return \TestMonitor\Asana\Token
+     *@throws \Exception
+     * @return \TestMonitor\Asana\AccessToken
      */
-    public function refreshToken(): Token
+    public function refreshToken(): AccessToken
     {
         $accessToken = $this->dispatcher->refreshAccessToken();
 
-        $this->token = new Token($accessToken, $this->dispatcher->refreshToken, $this->dispatcher->expiresIn + time());
+        $this->token = new AccessToken($accessToken, $this->dispatcher->refreshToken, $this->dispatcher->expiresIn + time());
 
         return $this->token;
     }

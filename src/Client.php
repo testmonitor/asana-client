@@ -82,7 +82,11 @@ class Client
     {
         $accessToken = $this->dispatcher->fetchToken($code);
 
-        $this->token = new AccessToken($accessToken, $this->dispatcher->refreshToken, $this->dispatcher->expiresIn + time());
+        $this->token = new AccessToken(
+            $accessToken,
+            $this->dispatcher->refreshToken,
+            $this->dispatcher->expiresIn + time()
+        );
 
         return $this->token;
     }
@@ -97,7 +101,11 @@ class Client
     {
         $accessToken = $this->dispatcher->refreshAccessToken();
 
-        $this->token = new AccessToken($accessToken, $this->dispatcher->refreshToken, $this->dispatcher->expiresIn + time());
+        $this->token = new AccessToken(
+            $accessToken,
+            $this->dispatcher->refreshToken,
+            $this->dispatcher->expiresIn + time()
+        );
 
         return $this->token;
     }

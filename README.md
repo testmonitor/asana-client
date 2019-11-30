@@ -64,7 +64,7 @@ $oauth = [
     'clientId' => '12345',
     'clientSecret' => 'abcdef',
     'redirectUrl' => 'https://redirect.myapp.com/',
-],
+];
 
 $asana = new \TestMonitor\Asana\Client($oauth, new \TestMonitor\Asana\Token());
 

@@ -52,7 +52,7 @@ $oauth = [
 
 $asana = new \TestMonitor\Asana\Client($oauth, new \TestMonitor\Asana\Token());
 
-header('Location: ' . $asana->authorizationUrl());
+header('Location: ' . $asana->authorizationUrl('state'));
 exit();
 ```
 

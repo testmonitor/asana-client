@@ -17,7 +17,7 @@ class AccessToken
     /**
      * @var string
      */
-    protected $expiresIn;
+    public $expiresIn;
 
     /**
      * Token constructor.

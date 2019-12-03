@@ -67,15 +67,20 @@ trait ManagesTasks
      * Create a new task.
      *
      * @param \TestMonitor\Asana\Resources\Task $task
+     * @param string $projectGid
+     * @param string $fields
      *
      * @throws \TestMonitor\Asana\Exceptions\NotFoundException
      * @throws \TestMonitor\Asana\Exceptions\UnauthorizedException
      * @return Task
      */
-    public function createTask(Task $task, $fields = 'name,notes,html_notes,completed,projects.gid'): Task
-    {
+    public function createTask(
+        Task $task,
+        string $projectGid,
+        $fields = 'name,notes,html_notes,completed,projects.gid'
+    ): Task {
         try {
-            $task = $this->client()->tasks->create($this->toAsanaTask($task), ['opt_fields' => $fields]);
+            $task = $this->client()->tasks->create($this->toAsanaTask($task, $projectGid), ['opt_fields' => $fields]);
 
             return $this->fromAsanaTask($task);
         } catch (NoAuthorizationError | InvalidTokenError | ForbiddenError $exception) {

@@ -188,7 +188,7 @@ class TasksTest extends TestCase
             'name' => $this->task->name,
             'notes' => $this->task->notes,
             'projectGid' => $this->project->gid,
-        ]));
+        ]), $this->project->gid);
 
         // Then
         $this->assertInstanceOf(Task::class, $task);
@@ -220,7 +220,7 @@ class TasksTest extends TestCase
             'name' => $this->task->name,
             'notes' => $this->task->notes,
             'projectGid' => $this->project->gid,
-        ]));
+        ]), $this->project->gid);
     }
 
     /** @test */
@@ -247,7 +247,6 @@ class TasksTest extends TestCase
             'completed' => $this->task->completed,
             'name' => $this->task->name,
             'notes' => $this->task->notes,
-            'projectGid' => 'unknown',
-        ]));
+        ]), 'unknown');
     }
 }

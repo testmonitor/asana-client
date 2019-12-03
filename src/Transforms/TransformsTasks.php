@@ -9,13 +9,14 @@ trait TransformsTasks
 {
     /**
      * @param \TestMonitor\Asana\Resources\Task $task
+     * @param string $projectGid
      * @return array
      */
-    protected function toAsanaTask(Task $task): array
+    protected function toAsanaTask(Task $task, string $projectGid = null): array
     {
         return [
             'completed' => $task->completed,
-            'projects' => [(string) $task->projectGid],
+            'projects' => [(string) $projectGid ?? $task->projectGid],
             'name' => $task->name,
             'html_notes' => '<body>' . $task->notes . '</body>',
         ];

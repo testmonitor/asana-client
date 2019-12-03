@@ -42,23 +42,14 @@ class Task extends Resource
     /**
      * Create a new resource instance.
      *
-     * @param bool $completed
-     * @param string $name
-     * @param string $notes
-     * @param string|null $gid
-     * @param string|null $projectGid
+     * @param array $attributes
      */
-    public function __construct(
-        bool $completed,
-        string $name,
-        string $notes,
-        ?string $projectGid = null,
-        ?string $gid = null
-    ) {
-        $this->gid = $gid;
-        $this->completed = $completed;
-        $this->name = $name;
-        $this->notes = $notes;
-        $this->projectGid = $projectGid;
+    public function __construct(array $attributes)
+    {
+        $this->gid = $attributes['gid'] ?? null;
+        $this->completed = $attributes['completed'] ?? false;
+        $this->name = $attributes['name'];
+        $this->notes = $attributes['notes'];
+        $this->projectGid = $attributes['projectGid'] ?? null;
     }
 }

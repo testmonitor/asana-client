@@ -161,7 +161,7 @@ class TasksTest extends TestCase
         $this->expectException(NotFoundException::class);
 
         // When
-        $task = $asana->task('unknown');
+        $asana->task('unknown');
     }
 
     /** @test */
@@ -183,7 +183,12 @@ class TasksTest extends TestCase
         );
 
         // When
-        $task = $asana->createTask(new Task($this->task->completed, $this->task->name, $this->task->notes, $this->project->gid));
+        $task = $asana->createTask(new Task([
+            'completed' => $this->task->completed,
+            'name' => $this->task->name,
+            'notes' => $this->task->notes,
+            'projectGid' => $this->project->gid,
+        ]));
 
         // Then
         $this->assertInstanceOf(Task::class, $task);
@@ -210,7 +215,12 @@ class TasksTest extends TestCase
         $this->expectException(UnauthorizedException::class);
 
         // When
-        $task = $asana->createTask(new Task($this->task->completed, $this->task->name, $this->task->notes, $this->project->gid));
+        $asana->createTask(new Task([
+            'completed' => $this->task->completed,
+            'name' => $this->task->name,
+            'notes' => $this->task->notes,
+            'projectGid' => $this->project->gid,
+        ]));
     }
 
     /** @test */
@@ -233,6 +243,11 @@ class TasksTest extends TestCase
         $this->expectException(NotFoundException::class);
 
         // When
-        $task = $asana->createTask(new Task($this->task->completed, $this->task->name, $this->task->notes, 'unknown'));
+        $asana->createTask(new Task([
+            'completed' => $this->task->completed,
+            'name' => $this->task->name,
+            'notes' => $this->task->notes,
+            'projectGid' => 'unknown',
+        ]));
     }
 }

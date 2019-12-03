@@ -13,9 +13,9 @@ trait TransformsWorkspaces
      */
     protected function fromAsanaWorkspace(stdClass $workspace): Workspace
     {
-        return new Workspace(
-            $workspace->gid,
-            $workspace->name
-        );
+        return new Workspace([
+            'gid' => $workspace->gid,
+            'name' => $workspace->name,
+        ]);
     }
 }

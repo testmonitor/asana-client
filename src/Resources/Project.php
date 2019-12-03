@@ -21,12 +21,11 @@ class Project extends Resource
     /**
      * Create a new resource instance.
      *
-     * @param string $gid
-     * @param string $name
+     * @param array $attributes
      */
-    public function __construct(string $gid, string $name)
+    public function __construct(array $attributes)
     {
-        $this->gid = $gid;
-        $this->name = $name;
+        $this->gid = $attributes['gid'];
+        $this->name = $attributes['name'];
     }
 }

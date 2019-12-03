@@ -98,12 +98,12 @@ $workspaces = $asana->workspaces();
 Or creating a task, for example (using a example project with gid 12345):
 
 ```php
-$task = $asana->createTask(new \TestMonitor\Asana\Resources\Task(
-    false,
-    'Name of the task',
-    'Some notes',
-    '12345'
-));
+$task = $asana->createTask(new \TestMonitor\Asana\Resources\Task([
+    'completed' => false,
+    'name' => 'Name of the task',
+    'notes' => 'Some notes',
+    'projectGid' => '12345',
+]));
 ```
 
 ## Tests

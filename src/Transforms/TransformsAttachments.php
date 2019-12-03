@@ -14,6 +14,9 @@ trait TransformsAttachments
      */
     protected function fromAsanaAttachment(stdClass $attachment): Attachment
     {
-        return new Attachment($attachment->name, $attachment->gid);
+        return new Attachment([
+            'gid' => $attachment->gid,
+            'name' => $attachment->name,
+        ]);
     }
 }

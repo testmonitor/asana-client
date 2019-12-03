@@ -27,12 +27,12 @@ trait TransformsTasks
      */
     protected function fromAsanaTask(stdClass $task): Task
     {
-        return new Task(
-            $task->completed ?? false,
-            $task->name ?? '',
-            $task->notes ?? '',
-            $task->projects[0]->gid ?? '',
-            $task->gid ?? ''
-        );
+        return new Task([
+            'completed' => $task->completed,
+            'name' => $task->name ?? '',
+            'notes' => $task->notes ?? '',
+            'projectGid' => $task->projects[0]->gid ?? '',
+            'gid' => $task->gid ?? '',
+        ]);
     }
 }

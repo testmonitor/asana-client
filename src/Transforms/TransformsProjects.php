@@ -14,9 +14,9 @@ trait TransformsProjects
      */
     protected function fromAsanaProject(stdClass $project): Project
     {
-        return new Project(
-            $project->gid,
-            $project->name
-        );
+        return new Project([
+            'gid' => $project->gid,
+            'name' => $project->name,
+        ]);
     }
 }

@@ -48,9 +48,9 @@ $oauth = [
     'clientId' => '12345',
     'clientSecret' => 'abcdef',
     'redirectUrl' => 'https://redirect.myapp.com/',
-],
+];
 
-$asana = new \TestMonitor\Asana\Client($oauth, new \TestMonitor\Asana\Token());
+$asana = new \TestMonitor\Asana\Client($oauth);
 
 header('Location: ' . $asana->authorizationUrl('state'));
 exit();
@@ -66,7 +66,7 @@ $oauth = [
     'redirectUrl' => 'https://redirect.myapp.com/',
 ];
 
-$asana = new \TestMonitor\Asana\Client($oauth, new \TestMonitor\Asana\Token());
+$asana = new \TestMonitor\Asana\Client($oauth);
 
 $token = $asana->fetchToken($_REQUEST['code']);
 ```
@@ -102,8 +102,7 @@ $task = $asana->createTask(new \TestMonitor\Asana\Resources\Task([
     'completed' => false,
     'name' => 'Name of the task',
     'notes' => 'Some notes',
-    'projectGid' => '12345',
-]));
+]), '12345');
 ```
 
 ## Tests

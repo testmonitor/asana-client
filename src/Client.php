@@ -6,6 +6,7 @@ use Asana\Client as AsanaClient;
 use Asana\Dispatcher\OAuthDispatcher;
 use Asana\Dispatcher\AccessTokenDispatcher;
 use TestMonitor\Asana\Exceptions\TokenExpiredException;
+use TestMonitor\Asana\Exceptions\UnauthorizedException;
 
 class Client
 {
@@ -99,6 +100,10 @@ class Client
      */
     public function refreshToken(): AccessToken
     {
+        if (empty($this->token)) {
+            throw new UnauthorizedException();
+        }
+
         $accessToken = $this->dispatcher->refreshAccessToken();
 
         $this->token = new AccessToken(
@@ -123,11 +128,16 @@ class Client
     /**
      * Returns an Asana client instance.
      *
-     * @throws TokenExpiredException
+     * @throws \TestMonitor\Asana\Exceptions\TokenExpiredException
+     * @throws \TestMonitor\Asana\Exceptions\UnauthorizedException
      * @return \Asana\Client
      */
     protected function client()
     {
+        if (empty($this->token)) {
+            throw new UnauthorizedException();
+        }
+
         if ($this->token->expired()) {
             throw new TokenExpiredException();
         }

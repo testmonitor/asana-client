@@ -7,6 +7,7 @@ use TestMonitor\Asana\Client;
 use PHPUnit\Framework\TestCase;
 use TestMonitor\Asana\AccessToken;
 use TestMonitor\Asana\Exceptions\TokenExpiredException;
+use TestMonitor\Asana\Exceptions\UnauthorizedException;
 
 class OauthTest extends TestCase
 {
@@ -131,5 +132,29 @@ class OauthTest extends TestCase
         $this->assertFalse($token->expired());
         $this->assertEquals($token->accessToken, $newToken->accessToken);
         $this->assertEquals($token->refreshToken, $newToken->refreshToken);
+    }
+
+    /** @test */
+    public function it_should_not_refresh_a_token_without_a_refresh_token()
+    {
+        // Given
+        $asana = new Client(['clientId' => 1, 'clientSecret' => 'secret', 'redirectUrl' => 'none']);
+
+        $this->expectException(UnauthorizedException::class);
+
+        // When
+        $asana->refreshToken();
+    }
+
+    /** @test */
+    public function it_should_not_provide_a_client_without_a_token()
+    {
+        // Given
+        $asana = new Client(['clientId' => 1, 'clientSecret' => 'secret', 'redirectUrl' => 'none']);
+
+        $this->expectException(UnauthorizedException::class);
+
+        // When
+        $asana->workspaces();
     }
 }

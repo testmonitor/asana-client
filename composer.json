@@ -42,12 +42,12 @@
     },
     "autoload": {
         "psr-4": {
-            "TestMonitor\\": "src/"
+            "TestMonitor\\Asana\\": "src/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "Tests\\": "tests/"
+            "TestMonitor\\Asana\\Tests\\": "tests/"
         }
     },
     "scripts": {

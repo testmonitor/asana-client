@@ -23,7 +23,9 @@ class Client
     /**
      * @var array
      */
-    public $options = ['headers' => ['asana-enable' => 'string_ids', 'asana-disable' => 'new_sections']];
+    public $options = ['headers' => [
+        'asana-enable' => 'string_ids,new_user_task_lists', 'asana-disable' => 'new_sections',
+    ]];
 
     /**
      * @var \Asana\Client

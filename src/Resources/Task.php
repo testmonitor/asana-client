@@ -2,6 +2,8 @@
 
 namespace TestMonitor\Asana\Resources;
 
+use TestMonitor\Asana\Validator;
+
 class Task extends Resource
 {
     /**
@@ -46,6 +48,8 @@ class Task extends Resource
      */
     public function __construct(array $attributes)
     {
+        Validator::keysExists($attributes, ['name', 'notes']);
+
         $this->gid = $attributes['gid'] ?? null;
         $this->completed = $attributes['completed'] ?? false;
         $this->name = $attributes['name'];

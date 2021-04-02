@@ -2,6 +2,8 @@
 
 namespace TestMonitor\Asana\Resources;
 
+use TestMonitor\Asana\Validator;
+
 class Attachment extends Resource
 {
     /**
@@ -25,6 +27,8 @@ class Attachment extends Resource
      */
     public function __construct(array $attributes)
     {
+        Validator::keyExists($attributes, 'name');
+
         $this->gid = $attributes['gid'] ?? null;
         $this->name = $attributes['name'];
     }

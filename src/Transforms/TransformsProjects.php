@@ -3,6 +3,7 @@
 namespace TestMonitor\Asana\Transforms;
 
 use stdClass;
+use TestMonitor\Asana\Validator;
 use TestMonitor\Asana\Resources\Project;
 
 trait TransformsProjects
@@ -14,6 +15,8 @@ trait TransformsProjects
      */
     protected function fromAsanaProject(stdClass $project): Project
     {
+        Validator::hasProperties($project, ['gid', 'name']);
+
         return new Project([
             'gid' => $project->gid,
             'name' => $project->name,

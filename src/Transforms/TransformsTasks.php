@@ -3,6 +3,7 @@
 namespace TestMonitor\Asana\Transforms;
 
 use stdClass;
+use TestMonitor\Asana\Validator;
 use TestMonitor\Asana\Resources\Task;
 
 trait TransformsTasks
@@ -28,6 +29,8 @@ trait TransformsTasks
      */
     protected function fromAsanaTask(stdClass $task): Task
     {
+        Validator::hasProperty($task, 'completed');
+
         return new Task([
             'completed' => $task->completed,
             'name' => $task->name ?? '',

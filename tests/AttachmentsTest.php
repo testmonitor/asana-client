@@ -1,6 +1,6 @@
 <?php
 
-namespace TestMonitor\Jira\Tests;
+namespace TestMonitor\Asana\Tests;
 
 use Mockery;
 use Asana\Errors\NotFoundError;

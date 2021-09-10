@@ -9,8 +9,8 @@ use TestMonitor\Asana\Resources\Task;
 trait TransformsTasks
 {
     /**
-     * @param \TestMonitor\Asana\Resources\Task $task
-     * @param string $projectGid
+     * @param  \TestMonitor\Asana\Resources\Task  $task
+     * @param  string  $projectGid
      * @return array
      */
     protected function toAsanaTask(Task $task, string $projectGid = null): array
@@ -24,7 +24,7 @@ trait TransformsTasks
     }
 
     /**
-     * @param \stdClass $task
+     * @param  \stdClass  $task
      * @return \TestMonitor\Asana\Resources\Task
      */
     protected function fromAsanaTask(stdClass $task): Task

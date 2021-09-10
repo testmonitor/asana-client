@@ -22,9 +22,9 @@ class AccessToken
     /**
      * Token constructor.
      *
-     * @param string $accessToken
-     * @param string $refreshToken
-     * @param int $expiresIn
+     * @param  string  $accessToken
+     * @param  string  $refreshToken
+     * @param  int  $expiresIn
      */
     public function __construct(string $accessToken = '', string $refreshToken = '', int $expiresIn = 0)
     {

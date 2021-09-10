@@ -17,12 +17,12 @@ trait ManagesAttachments
     /**
      * Add a new attachment.
      *
-     * @param string $path
-     * @param string $taskGid
+     * @param  string  $path
+     * @param  string  $taskGid
+     * @return \TestMonitor\Asana\Resources\Attachment
      *
      * @throws \TestMonitor\Asana\Exceptions\NotFoundException
      * @throws \TestMonitor\Asana\Exceptions\UnauthorizedException
-     * @return \TestMonitor\Asana\Resources\Attachment
      */
     public function addAttachment(string $path, string $taskGid)
     {
@@ -35,7 +35,7 @@ trait ManagesAttachments
             );
 
             return $this->fromAsanaAttachment($attachment);
-        } catch (NoAuthorizationError | InvalidTokenError | ForbiddenError $exception) {
+        } catch (NoAuthorizationError|InvalidTokenError|ForbiddenError $exception) {
             throw new UnauthorizedException($exception->getMessage());
         } catch (NotFoundError $exception) {
             throw new NotFoundException($exception->getMessage());

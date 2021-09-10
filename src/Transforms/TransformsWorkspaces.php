@@ -9,7 +9,7 @@ use TestMonitor\Asana\Resources\Workspace;
 trait TransformsWorkspaces
 {
     /**
-     * @param \stdClass $workspace
+     * @param  \stdClass  $workspace
      * @return \TestMonitor\Asana\Resources\Workspace
      */
     protected function fromAsanaWorkspace(stdClass $workspace): Workspace

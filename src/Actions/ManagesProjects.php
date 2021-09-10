@@ -18,11 +18,11 @@ trait ManagesProjects
     /**
      * Get a list of of projects for a workspace.
      *
-     * @param string $workspaceGid
+     * @param  string  $workspaceGid
+     * @return \TestMonitor\Asana\Resources\Project[]
      *
      * @throws \TestMonitor\Asana\Exceptions\NotFoundException
      * @throws \TestMonitor\Asana\Exceptions\UnauthorizedException
-     * @return \TestMonitor\Asana\Resources\Project[]
      */
     public function projects($workspaceGid)
     {
@@ -32,7 +32,7 @@ trait ManagesProjects
             return array_map(function ($project) {
                 return $this->fromAsanaProject($project);
             }, iterator_to_array($projects));
-        } catch (NoAuthorizationError | InvalidTokenError | ForbiddenError $exception) {
+        } catch (NoAuthorizationError|InvalidTokenError|ForbiddenError $exception) {
             throw new UnauthorizedException($exception->getMessage());
         } catch (NotFoundError $exception) {
             throw new NotFoundException($exception->getMessage());
@@ -42,11 +42,11 @@ trait ManagesProjects
     /**
      * Get a single project.
      *
-     * @param string $gid
+     * @param  string  $gid
+     * @return \TestMonitor\Asana\Resources\Project
      *
      * @throws \TestMonitor\Asana\Exceptions\NotFoundException
      * @throws \TestMonitor\Asana\Exceptions\UnauthorizedException
-     * @return \TestMonitor\Asana\Resources\Project
      */
     public function project($gid): Project
     {
@@ -54,7 +54,7 @@ trait ManagesProjects
             $project = $this->client()->projects->findById($gid);
 
             return $this->fromAsanaProject($project);
-        } catch (NoAuthorizationError | InvalidTokenError | ForbiddenError $exception) {
+        } catch (NoAuthorizationError|InvalidTokenError|ForbiddenError $exception) {
             throw new UnauthorizedException($exception->getMessage());
         } catch (NotFoundError $exception) {
             throw new NotFoundException($exception->getMessage());

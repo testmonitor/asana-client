@@ -43,10 +43,10 @@ class Client
     /**
      * Create a new client instance.
      *
-     * @param array $credentials
-     * @param \TestMonitor\Asana\AccessToken $token
-     * @param array $options
-     * @param OAuthDispatcher|null $dispatcher
+     * @param  array  $credentials
+     * @param  \TestMonitor\Asana\AccessToken  $token
+     * @param  array  $options
+     * @param  OAuthDispatcher|null  $dispatcher
      */
     public function __construct(
         array $credentials,
@@ -69,7 +69,7 @@ class Client
     /**
      * Create a new authorization URL for the given state.
      *
-     * @param string $state
+     * @param  string  $state
      * @return string
      */
     public function authorizationUrl($state)
@@ -80,8 +80,7 @@ class Client
     /**
      * Fetch the access and refresh token based on the authorization code.
      *
-     * @param string $code
-     *
+     * @param  string  $code
      * @return \TestMonitor\Asana\AccessToken
      */
     public function fetchToken(string $code): AccessToken
@@ -100,8 +99,9 @@ class Client
     /**
      * Refresh the current access token.
      *
-     *@throws \Exception
      * @return \TestMonitor\Asana\AccessToken
+     *
+     *@throws \Exception
      */
     public function refreshToken(): AccessToken
     {
@@ -133,9 +133,10 @@ class Client
     /**
      * Returns an Asana client instance.
      *
+     * @return \Asana\Client
+     *
      * @throws \TestMonitor\Asana\Exceptions\TokenExpiredException
      * @throws \TestMonitor\Asana\Exceptions\UnauthorizedException
-     * @return \Asana\Client
      */
     protected function client()
     {
@@ -151,7 +152,7 @@ class Client
     }
 
     /**
-     * @param \Asana\Client $client
+     * @param  \Asana\Client  $client
      */
     public function setClient(AsanaClient $client)
     {

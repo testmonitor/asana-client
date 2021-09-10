@@ -44,7 +44,7 @@ class Task extends Resource
     /**
      * Create a new resource instance.
      *
-     * @param array $attributes
+     * @param  array  $attributes
      */
     public function __construct(array $attributes)
     {

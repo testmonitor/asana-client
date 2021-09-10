@@ -14,7 +14,7 @@ class InvalidDataException extends Exception
     /**
      * Create a new exception instance.
      *
-     * @param mixed $data
+     * @param  mixed  $data
      */
     public function __construct($data)
     {

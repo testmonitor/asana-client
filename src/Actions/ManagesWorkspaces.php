@@ -18,8 +18,9 @@ trait ManagesWorkspaces
     /**
      * Get a list of of workspaces.
      *
-     * @throws \TestMonitor\Asana\Exceptions\UnauthorizedException
      * @return \TestMonitor\Asana\Resources\Workspace[]
+     *
+     * @throws \TestMonitor\Asana\Exceptions\UnauthorizedException
      */
     public function workspaces()
     {
@@ -29,7 +30,7 @@ trait ManagesWorkspaces
             return array_map(function ($workspace) {
                 return $this->fromAsanaWorkspace($workspace);
             }, iterator_to_array($workspaces));
-        } catch (NoAuthorizationError | InvalidTokenError | ForbiddenError $exception) {
+        } catch (NoAuthorizationError|InvalidTokenError|ForbiddenError $exception) {
             throw new UnauthorizedException($exception->getMessage());
         }
     }
@@ -37,11 +38,11 @@ trait ManagesWorkspaces
     /**
      * Get a single workspace.
      *
-     * @param string $gid
+     * @param  string  $gid
+     * @return \TestMonitor\Asana\Resources\Workspace
      *
      * @throws \TestMonitor\Asana\Exceptions\NotFoundException
      * @throws \TestMonitor\Asana\Exceptions\UnauthorizedException
-     * @return \TestMonitor\Asana\Resources\Workspace
      */
     public function workspace($gid): Workspace
     {
@@ -49,7 +50,7 @@ trait ManagesWorkspaces
             $workspace = $this->client()->workspaces->findById($gid);
 
             return $this->fromAsanaWorkspace($workspace);
-        } catch (NoAuthorizationError | InvalidTokenError | ForbiddenError $exception) {
+        } catch (NoAuthorizationError|InvalidTokenError|ForbiddenError $exception) {
             throw new UnauthorizedException($exception->getMessage());
         } catch (NotFoundError $exception) {
             throw new NotFoundException($exception->getMessage());

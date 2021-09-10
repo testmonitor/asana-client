@@ -9,8 +9,7 @@ use TestMonitor\Asana\Resources\Project;
 trait TransformsProjects
 {
     /**
-     * @param \stdClass $project
-     *
+     * @param  \stdClass  $project
      * @return \TestMonitor\Asana\Resources\Project
      */
     protected function fromAsanaProject(stdClass $project): Project

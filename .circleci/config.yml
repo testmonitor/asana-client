@@ -1,19 +1,17 @@
-version: 2
+version: 2.1
 
 jobs:
     build:
         working_directory: ~/testmonitor/asana-client
 
         docker:
-            - image: circleci/php:7.4-browsers
+            - image: cimg/php:8.0-node
 
         steps:
             - run:
                   name: Update Composer
                   command: sudo composer self-update
-
             - checkout
-
             - restore_cache:
                   keys:
                       - composer-v1-{{ checksum "composer.lock" }}
@@ -25,25 +23,65 @@ jobs:
                   key: composer-v1-{{ checksum "composer.lock" }}
                   paths:
                       - vendor
+            - persist_to_workspace:
+                  root: .
+                  paths:
+                      - .
 
+    code_analysis:
+        working_directory: ~/testmonitor/asana-client
+
+        docker:
+            - image: cimg/php:8.0-node
+
+        steps:
+            - attach_workspace:
+                  at: .
             - run:
                   name: PHP CS Fixer
-                  command: vendor/bin/php-cs-fixer fix --config=.php_cs --diff --dry-run --verbose
+                  command: |
+                      mkdir -p ./logs/phpcsfixer
+                      vendor/bin/php-cs-fixer fix --config=.php-cs-fixer.php --diff --dry-run --format=junit > logs/phpcsfixer/junit.xml
             - run:
                   name: PHPCS
                   command: |
                       mkdir -p ./logs/phpcs
-                      vendor/bin/phpcs --standard="PSR1,PSR2" -v --report=junit --report-file=logs/phpcs/junit.xml src/
-            - run:
-                  name: Run Unit Tests
-                  command: |
-                      mkdir -p ./logs/phpunit
-                      vendor/bin/phpunit -d memory_limit=128M --log-junit logs/phpunit/junit.xml --testdox-html logs/phpunit/testdox.html
+                      vendor/bin/phpcs --standard="PSR1,PSR2" -v --report=junit --report-file=logs/phpcs/junit.xml app/
 
+            - store_artifacts:
+                  path: ./logs/phpcsfixer
+                  destination: phpcsfixer
             - store_artifacts:
                   path: ./logs/phpcs
                   destination: phpcs
 
+    unit_test:
+        working_directory: ~/testmonitor/asana-client
+
+        docker:
+            - image: cimg/php:8.0-node
+
+        steps:
+            - attach_workspace:
+                  at: .
+            - run:
+                  name: Run Unit Tests
+                  command: |
+                      mkdir -p ./logs/phpunit
+                      vendor/bin/phpunit -d memory_limit=1G --printer "\PHPUnit\TextUI\DefaultResultPrinter" --log-junit logs/phpunit/junit.xml --testdox-html logs/phpunit/testdox.html
+
             - store_artifacts:
                   path: ./logs/phpunit
                   destination: phpunit
+
+workflows:
+    version: 2
+    build_analyze_test:
+        jobs:
+            - build
+            - code_analysis:
+                  requires:
+                      - build
+            - unit_test:
+                  requires:
+                      - code_analysis

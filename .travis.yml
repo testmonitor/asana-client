@@ -1,7 +1,6 @@
 language: php
 
 php:
-  - 7.4
   - 8.0
 
 # This triggers builds to run on the new TravisCI infrastructure.
@@ -22,8 +21,7 @@ before_script:
 
 script:
   - vendor/bin/phpcs --standard=psr2 src/
-  - vendor/bin/phpunit --coverage-text --coverage-clover=coverage.clover
+  - XDEBUG_MODE=coverage vendor/bin/phpunit --coverage-text --coverage-clover=coverage.clover
 
 after_script:
-  - wget https://scrutinizer-ci.com/ocular.phar
-  - php ocular.phar code-coverage:upload --format=php-clover coverage.clover
+  - vendor/bin/ocular code-coverage:upload --format=php-clover coverage.clover

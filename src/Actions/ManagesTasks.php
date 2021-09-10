@@ -19,11 +19,11 @@ trait ManagesTasks
      * Get a list of of tasks for a project.
      *
      * @param string $projectGid
-     *
      * @param string $fields
+     * @return \TestMonitor\Asana\Resources\Task[]
+     *
      * @throws \TestMonitor\Asana\Exceptions\NotFoundException
      * @throws \TestMonitor\Asana\Exceptions\UnauthorizedException
-     * @return \TestMonitor\Asana\Resources\Task[]
      */
     public function tasks($projectGid, $fields = 'name,notes,html_notes,completed,projects.gid')
     {
@@ -33,7 +33,7 @@ trait ManagesTasks
             return array_map(function ($task) {
                 return $this->fromAsanaTask($task);
             }, iterator_to_array($tasks));
-        } catch (NoAuthorizationError | InvalidTokenError | ForbiddenError $exception) {
+        } catch (NoAuthorizationError|InvalidTokenError|ForbiddenError $exception) {
             throw new UnauthorizedException($exception->getMessage());
         } catch (NotFoundError $exception) {
             throw new NotFoundException($exception->getMessage());
@@ -45,10 +45,10 @@ trait ManagesTasks
      *
      * @param string $gid
      * @param string $fields
+     * @return \TestMonitor\Asana\Resources\Task
      *
      * @throws \TestMonitor\Asana\Exceptions\NotFoundException
      * @throws \TestMonitor\Asana\Exceptions\UnauthorizedException
-     * @return \TestMonitor\Asana\Resources\Task
      */
     public function task($gid, $fields = 'name,notes,html_notes,completed,projects.gid'): Task
     {
@@ -56,7 +56,7 @@ trait ManagesTasks
             $task = $this->client()->tasks->findById($gid, ['opt_fields' => $fields]);
 
             return $this->fromAsanaTask($task);
-        } catch (NoAuthorizationError | InvalidTokenError | ForbiddenError $exception) {
+        } catch (NoAuthorizationError|InvalidTokenError|ForbiddenError $exception) {
             throw new UnauthorizedException($exception->getMessage());
         } catch (NotFoundError $exception) {
             throw new NotFoundException($exception->getMessage());
@@ -69,10 +69,10 @@ trait ManagesTasks
      * @param \TestMonitor\Asana\Resources\Task $task
      * @param string $projectGid
      * @param string $fields
+     * @return Task
      *
      * @throws \TestMonitor\Asana\Exceptions\NotFoundException
      * @throws \TestMonitor\Asana\Exceptions\UnauthorizedException
-     * @return Task
      */
     public function createTask(
         Task $task,
@@ -83,7 +83,7 @@ trait ManagesTasks
             $task = $this->client()->tasks->create($this->toAsanaTask($task, $projectGid), ['opt_fields' => $fields]);
 
             return $this->fromAsanaTask($task);
-        } catch (NoAuthorizationError | InvalidTokenError | ForbiddenError $exception) {
+        } catch (NoAuthorizationError|InvalidTokenError|ForbiddenError $exception) {
             throw new UnauthorizedException($exception->getMessage());
         } catch (NotFoundError $exception) {
             throw new NotFoundException($exception->getMessage());

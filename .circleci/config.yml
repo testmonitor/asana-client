@@ -12,17 +12,9 @@ jobs:
                   name: Update Composer
                   command: sudo composer self-update
             - checkout
-            - restore_cache:
-                  keys:
-                      - composer-v1-{{ checksum "composer.lock" }}
-                      - composer-v1-
             - run:
                   name: Install Composer Dependencies
                   command: composer install -n --ignore-platform-reqs
-            - save_cache:
-                  key: composer-v1-{{ checksum "composer.lock" }}
-                  paths:
-                      - vendor
             - persist_to_workspace:
                   root: .
                   paths:

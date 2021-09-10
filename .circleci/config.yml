@@ -54,6 +54,8 @@ jobs:
             - store_artifacts:
                   path: ./logs/phpcs
                   destination: phpcs
+           - store_test_results:
+                  path: ./logs
 
     unit_test:
         working_directory: ~/testmonitor/asana-client
@@ -73,6 +75,8 @@ jobs:
             - store_artifacts:
                   path: ./logs/phpunit
                   destination: phpunit
+           - store_test_results:
+                   path: ./logs
 
 workflows:
     version: 2

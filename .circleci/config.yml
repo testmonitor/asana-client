@@ -76,7 +76,7 @@ jobs:
                   path: ./logs/phpunit
                   destination: phpunit
            - store_test_results:
-                   path: ./logs
+                  path: ./logs
 
 workflows:
     version: 2

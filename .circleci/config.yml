@@ -12,17 +12,9 @@ jobs:
                   name: Update Composer
                   command: sudo composer self-update
             - checkout
-            - restore_cache:
-                  keys:
-                      - composer-v1-{{ checksum "composer.lock" }}
-                      - composer-v1-
             - run:
                   name: Install Composer Dependencies
                   command: composer install -n --ignore-platform-reqs
-            - save_cache:
-                  key: composer-v1-{{ checksum "composer.lock" }}
-                  paths:
-                      - vendor
             - persist_to_workspace:
                   root: .
                   paths:
@@ -46,7 +38,7 @@ jobs:
                   name: PHPCS
                   command: |
                       mkdir -p ./logs/phpcs
-                      vendor/bin/phpcs --standard="PSR1,PSR2" -v --report=junit --report-file=logs/phpcs/junit.xml app/
+                      vendor/bin/phpcs --standard="PSR1,PSR2" -v --report=junit --report-file=logs/phpcs/junit.xml src/
 
             - store_artifacts:
                   path: ./logs/phpcsfixer
@@ -54,6 +46,8 @@ jobs:
             - store_artifacts:
                   path: ./logs/phpcs
                   destination: phpcs
+            - store_test_results:
+                  path: ./logs
 
     unit_test:
         working_directory: ~/testmonitor/asana-client
@@ -73,6 +67,8 @@ jobs:
             - store_artifacts:
                   path: ./logs/phpunit
                   destination: phpunit
+            - store_test_results:
+                  path: ./logs
 
 workflows:
     version: 2

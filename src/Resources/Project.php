@@ -27,6 +27,7 @@ class Project extends Resource
      */
     public function __construct(array $attributes)
     {
+
         Validator::keysExists($attributes, ['gid', 'name']);
 
         $this->gid = $attributes['gid'];

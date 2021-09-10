@@ -81,7 +81,6 @@ class Client
      * Fetch the access and refresh token based on the authorization code.
      *
      * @param string $code
-     *
      * @return \TestMonitor\Asana\AccessToken
      */
     public function fetchToken(string $code): AccessToken
@@ -101,6 +100,7 @@ class Client
      * Refresh the current access token.
      *
      *@throws \Exception
+     *
      * @return \TestMonitor\Asana\AccessToken
      */
     public function refreshToken(): AccessToken
@@ -135,6 +135,7 @@ class Client
      *
      * @throws \TestMonitor\Asana\Exceptions\TokenExpiredException
      * @throws \TestMonitor\Asana\Exceptions\UnauthorizedException
+     *
      * @return \Asana\Client
      */
     protected function client()

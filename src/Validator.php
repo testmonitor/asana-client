@@ -10,6 +10,7 @@ class Validator
      * @param mixed $subject
      *
      * @throws \TestMonitor\Asana\Exceptions\InvalidDataException
+     *
      * @return bool
      */
     public static function isInteger($subject)
@@ -25,6 +26,7 @@ class Validator
      * @param mixed $subject
      *
      * @throws \TestMonitor\Asana\Exceptions\InvalidDataException
+     *
      * @return bool
      */
     public static function isString($subject)
@@ -40,6 +42,7 @@ class Validator
      * @param mixed $subject
      *
      * @throws \TestMonitor\Asana\Exceptions\InvalidDataException
+     *
      * @return bool
      */
     public static function isArray($subject)
@@ -56,6 +59,7 @@ class Validator
      * @param mixed $needle
      *
      * @throws \TestMonitor\Asana\Exceptions\InvalidDataException
+     *
      * @return bool
      */
     public static function keyExists($haystack, $needle)
@@ -72,6 +76,7 @@ class Validator
      * @param array $needles
      *
      * @throws \TestMonitor\Asana\Exceptions\InvalidDataException
+     *
      * @return bool
      */
     public static function keysExists($haystack, array $needles)
@@ -88,6 +93,7 @@ class Validator
      * @param string $property
      *
      * @throws \TestMonitor\Asana\Exceptions\InvalidDataException
+     *
      * @return bool
      */
     public static function hasProperty($object, $property)
@@ -104,6 +110,7 @@ class Validator
      * @param array $properties
      *
      * @throws \TestMonitor\Asana\Exceptions\InvalidDataException
+     *
      * @return bool
      */
     public static function hasProperties($object, array $properties)

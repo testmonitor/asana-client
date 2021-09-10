@@ -10,7 +10,6 @@ trait TransformsProjects
 {
     /**
      * @param \stdClass $project
-     *
      * @return \TestMonitor\Asana\Resources\Project
      */
     protected function fromAsanaProject(stdClass $project): Project

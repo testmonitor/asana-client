@@ -10,7 +10,6 @@ trait TransformsAttachments
 {
     /**
      * @param \stdClass $attachment
-     *
      * @return \TestMonitor\Asana\Resources\Attachment
      */
     protected function fromAsanaAttachment(stdClass $attachment): Attachment

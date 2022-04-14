@@ -25,8 +25,8 @@ class Client
      */
     public $options = [
         'headers' => [
-            'asana-enable' => 'string_ids,new_user_task_lists,new_project_templates',
-            'asana-disable' => 'new_sections',
+            'asana-enable' => 'string_ids,new_user_task_lists',
+            'asana-disable' => 'new_sections,new_project_templates',
         ],
     ];
 

@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [1.2.2] - 2022-06-20
+### Updated
+- Set "new_project_templates" as a default in header configuration
+
 ## [1.2.1] - 2021-01-29
 ### Updated
 - Set "new_user_task_lists" as a default in header configuration

@@ -2,23 +2,19 @@
 
 namespace TestMonitor\Asana\Transforms;
 
-use stdClass;
 use TestMonitor\Asana\Validator;
 use TestMonitor\Asana\Resources\Attachment;
 
 trait TransformsAttachments
 {
     /**
-     * @param \stdClass $attachment
+     * @param array $attachment
      * @return \TestMonitor\Asana\Resources\Attachment
      */
-    protected function fromAsanaAttachment(stdClass $attachment): Attachment
+    protected function fromAsanaAttachment(array $attachment): Attachment
     {
-        Validator::hasProperties($attachment, ['gid', 'name']);
+        Validator::keysExists($attachment, ['gid', 'name']);
 
-        return new Attachment([
-            'gid' => $attachment->gid,
-            'name' => $attachment->name,
-        ]);
+        return new Attachment($attachment);
     }
 }

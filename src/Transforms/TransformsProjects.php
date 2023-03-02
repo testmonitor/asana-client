@@ -2,23 +2,19 @@
 
 namespace TestMonitor\Asana\Transforms;
 
-use stdClass;
 use TestMonitor\Asana\Validator;
 use TestMonitor\Asana\Resources\Project;
 
 trait TransformsProjects
 {
     /**
-     * @param \stdClass $project
+     * @param array $project
      * @return \TestMonitor\Asana\Resources\Project
      */
-    protected function fromAsanaProject(stdClass $project): Project
+    protected function fromAsanaProject(array $project): Project
     {
-        Validator::hasProperties($project, ['gid', 'name']);
+        Validator::keysExists($project, ['gid', 'name']);
 
-        return new Project([
-            'gid' => $project->gid,
-            'name' => $project->name,
-        ]);
+        return new Project($project);
     }
 }

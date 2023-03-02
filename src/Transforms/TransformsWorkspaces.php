@@ -2,23 +2,19 @@
 
 namespace TestMonitor\Asana\Transforms;
 
-use stdClass;
 use TestMonitor\Asana\Validator;
 use TestMonitor\Asana\Resources\Workspace;
 
 trait TransformsWorkspaces
 {
     /**
-     * @param \stdClass $workspace
+     * @param array $workspace
      * @return \TestMonitor\Asana\Resources\Workspace
      */
-    protected function fromAsanaWorkspace(stdClass $workspace): Workspace
+    protected function fromAsanaWorkspace(array $workspace): Workspace
     {
-        Validator::hasProperties($workspace, ['gid', 'name']);
+        Validator::keysExists($workspace, ['gid', 'name']);
 
-        return new Workspace([
-            'gid' => $workspace->gid,
-            'name' => $workspace->name,
-        ]);
+        return new Workspace($workspace);
     }
 }

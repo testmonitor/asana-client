@@ -26,11 +26,24 @@ class AccessToken
      * @param string $refreshToken
      * @param int $expiresIn
      */
-    public function __construct(string $accessToken = '', string $refreshToken = '', int $expiresIn = 0)
+    public function __construct($accessToken = '', $refreshToken = '', $expiresIn = 0)
     {
         $this->accessToken = $accessToken;
         $this->refreshToken = $refreshToken;
         $this->expiresIn = $expiresIn;
+    }
+
+    /**
+     * @param \League\OAuth2\Client\Token\AccessToken $token
+     * @return \TestMonitor\Asana\AccessToken
+     */
+    public static function fromAsana($token)
+    {
+        return new self(
+            $token->getToken(),
+            $token->getRefreshToken(),
+            $token->getExpires(),
+        );
     }
 
     /**

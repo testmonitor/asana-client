@@ -51,9 +51,10 @@ class Task extends Resource
         Validator::keysExists($attributes, ['name', 'notes']);
 
         $this->gid = $attributes['gid'] ?? null;
+        // $this->completed = "true";
         $this->completed = $attributes['completed'] ?? false;
         $this->name = $attributes['name'];
         $this->notes = $attributes['notes'];
-        $this->projectGid = $attributes['projectGid'] ?? null;
+        $this->projectGid = (string) $attributes['projectGid'] ?? null;
     }
 }

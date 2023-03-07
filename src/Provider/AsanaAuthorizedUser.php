@@ -38,26 +38,41 @@ class AsanaAuthorizedUser implements ResourceOwnerInterface
         return $this->response;
     }
 
+    /**
+     * @return string | null
+     */
     public function getUrl()
     {
         return $this->response['url'] ?: null;
     }
 
+    /**
+     * @return string | null
+     */
     public function getTeam()
     {
         return $this->response['team'] ?: null;
     }
 
+    /**
+     * @return string | null
+     */
     public function getUser()
     {
         return $this->response['user'] ?: null;
     }
 
+    /**
+     * @return integer | null
+     */
     public function getTeamId()
     {
         return $this->response['team_id'] ?: null;
     }
 
+    /**
+     * @return integer | null
+     */
     public function getUserId()
     {
         return $this->response['user_id'] ?: null;

@@ -37,7 +37,7 @@ class AccessToken
      * @param \League\OAuth2\Client\Token\AccessToken $token
      * @return \TestMonitor\Asana\AccessToken
      */
-    public static function fromAsana($token)
+    public static function fromAsana(array $token)
     {
         return new self(
             $token->getToken(),

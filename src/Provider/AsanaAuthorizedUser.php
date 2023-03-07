@@ -39,7 +39,7 @@ class AsanaAuthorizedUser implements ResourceOwnerInterface
     }
 
     /**
-     * @return string | null
+     * @return string|null
      */
     public function getUrl()
     {
@@ -47,7 +47,7 @@ class AsanaAuthorizedUser implements ResourceOwnerInterface
     }
 
     /**
-     * @return string | null
+     * @return string|null
      */
     public function getTeam()
     {
@@ -55,7 +55,7 @@ class AsanaAuthorizedUser implements ResourceOwnerInterface
     }
 
     /**
-     * @return string | null
+     * @return string|null
      */
     public function getUser()
     {
@@ -63,7 +63,7 @@ class AsanaAuthorizedUser implements ResourceOwnerInterface
     }
 
     /**
-     * @return integer | null
+     * @return int|null
      */
     public function getTeamId()
     {
@@ -71,7 +71,7 @@ class AsanaAuthorizedUser implements ResourceOwnerInterface
     }
 
     /**
-     * @return integer | null
+     * @return int|null
      */
     public function getUserId()
     {

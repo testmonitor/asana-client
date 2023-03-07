@@ -59,11 +59,15 @@ class Client
      * @param array $credentials
      * @param \TestMonitor\Asana\AccessToken $token
      * @param OAuthDispatcher|null $dispatcher
+     * @param string|null $enable
+     * @param string|null $disable
      */
     public function __construct(
         array $credentials,
         AccessToken $token = null,
-        AsanaProvider $provider = null
+        AsanaProvider $provider = null,
+        string $enable = null,
+        string $disable = null
     ) {
         $this->token = $token;
 
@@ -73,6 +77,9 @@ class Client
             'redirectUri' => $credentials['redirectUrl'],
             'refresh_token' => $token->refreshToken ?? null,
         ]);
+
+        $this->enable = $enable ?? $this->enable;
+        $this->disable = $disable ?? $this->disable;
     }
 
     /**

@@ -58,13 +58,11 @@ class Client
      *
      * @param array $credentials
      * @param \TestMonitor\Asana\AccessToken $token
-     * @param array $options
      * @param OAuthDispatcher|null $dispatcher
      */
     public function __construct(
         array $credentials,
         AccessToken $token = null,
-        array $options = [],
         AsanaProvider $provider = null
     ) {
         $this->token = $token;
@@ -75,8 +73,6 @@ class Client
             'redirectUri' => $credentials['redirectUrl'],
             'refresh_token' => $token->refreshToken ?? null,
         ]);
-
-        $this->options = array_merge($this->options, $options);
     }
 
     /**

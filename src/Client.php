@@ -26,12 +26,12 @@ class Client
     /**
      * @var string
      */
-    protected $asanaEnable = 'string_ids,new_user_task_lists,new_project_templates';
+    protected $enable = 'string_ids,new_user_task_lists,new_project_templates';
 
     /**
      * @var string
      */
-    protected $asanaDisable = 'new_sections';
+    protected $disable = 'new_sections';
 
     /**
      * @var string
@@ -163,8 +163,8 @@ class Client
                 'Authorization' => 'Bearer ' . $this->token->accessToken,
                 'Accept' => 'application/json',
                 'Content-Type' => 'application/json',
-                'asana-enable' => $this->asanaEnable,
-                'asana-disable' => $this->asanaDisable,
+                'asana-enable' => $this->enable,
+                'asana-disable' => $this->disable,
             ],
         ]);
     }

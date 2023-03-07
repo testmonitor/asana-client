@@ -24,14 +24,14 @@ class Client
     protected $token;
 
     /**
-     * @var array
+     * @var string
      */
-    public $options = [
-        'headers' => [
-            'asana-enable' => 'string_ids,new_user_task_lists,new_project_templates',
-            'asana-disable' => 'new_sections',
-        ],
-    ];
+    protected $asanaEnable = 'string_ids,new_user_task_lists,new_project_templates';
+
+    /**
+     * @var string
+     */
+    protected $asanaDisable = 'new_sections';
 
     /**
      * @var string
@@ -167,8 +167,8 @@ class Client
                 'Authorization' => 'Bearer ' . $this->token->accessToken,
                 'Accept' => 'application/json',
                 'Content-Type' => 'application/json',
-                'asana-enable' => 'string_ids,new_user_task_lists,new_project_templates',
-                'asana-disable' => 'new_sections',
+                'asana-enable' => $this->asanaEnable,
+                'asana-disable' => $this->asanaDisable,
             ],
         ]);
     }

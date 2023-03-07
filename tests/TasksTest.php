@@ -219,9 +219,9 @@ class TasksTest extends TestCase
 
         // When
         $asana->createTask(new Task([
-            'completed' => $this->task->completed,
-            'name' => $this->task->name,
-            'notes' => $this->task->notes,
+            'completed' => $this->task['completed'],
+            'name' => $this->task['name'],
+            'notes' => $this->task['notes'],
         ]), 'unknown');
     }
 }

@@ -84,7 +84,7 @@ class WorkspacesTest extends TestCase
 
         $asana->setClient($service = Mockery::mock('\GuzzleHttp\Client'));
 
-        $service->shouldReceive('request')->once()->with('GET', "workspaces/{$this->workspace->gid}", [])->andReturn(
+        $service->shouldReceive('request')->once()->with('GET', "workspaces/{$this->workspace['gid']}", [])->andReturn(
             $response = Mockery::mock('Psr\Http\Message\ResponseInterface')
         );
 
@@ -92,7 +92,7 @@ class WorkspacesTest extends TestCase
         $response->shouldReceive('getBody')->andReturn(json_encode((array) $this->workspace));
 
         // When
-        $workspace = $asana->workspace($this->workspace->gid);
+        $workspace = $asana->workspace($this->workspace['gid']);
 
         // Then
         $this->assertInstanceOf(Workspace::class, $workspace);
@@ -107,12 +107,12 @@ class WorkspacesTest extends TestCase
 
         $asana->setClient($service = Mockery::mock('\GuzzleHttp\Client'));
 
-        $service->shouldReceive('request')->once()->with('GET', "workspaces/{$this->workspace->gid}", [])->andThrow(new UnauthorizedException());
+        $service->shouldReceive('request')->once()->with('GET', "workspaces/{$this->workspace['gid']}", [])->andThrow(new UnauthorizedException());
 
         $this->expectException(UnauthorizedException::class);
 
         // When
-        $workspace = $asana->workspace($this->workspace->gid);
+        $workspace = $asana->workspace($this->workspace['gid']);
     }
 
     /** @test */

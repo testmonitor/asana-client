@@ -36,7 +36,7 @@ class OauthTest extends TestCase
 
         $asana = new Client(['clientId' => 1, 'clientSecret' => 'secret', 'redirectUrl' => 'none'], $token);
 
-        $asana->setClient($service = Mockery::mock('\Asana\Client'));
+        $asana->setClient($service = Mockery::mock('\GuzzleHttp\Client'));
 
         // When
         $expired = $asana->tokenExpired();
@@ -55,7 +55,7 @@ class OauthTest extends TestCase
 
         $asana = new Client(['clientId' => 1, 'clientSecret' => 'secret', 'redirectUrl' => 'none'], $token);
 
-        $asana->setClient($service = Mockery::mock('\Asana\Client'));
+        $asana->setClient($service = Mockery::mock('\GuzzleHttp\Client'));
 
         $this->expectException(TokenExpiredException::class);
 

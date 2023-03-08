@@ -36,7 +36,7 @@ class OauthTest extends TestCase
 
         $asana = new Client(['clientId' => 1, 'clientSecret' => 'secret', 'redirectUrl' => 'none'], $token);
 
-        $asana->setClient($service = Mockery::mock('\Asana\Client'));
+        $asana->setClient($service = Mockery::mock('\GuzzleHttp\Client'));
 
         // When
         $expired = $asana->tokenExpired();
@@ -55,7 +55,7 @@ class OauthTest extends TestCase
 
         $asana = new Client(['clientId' => 1, 'clientSecret' => 'secret', 'redirectUrl' => 'none'], $token);
 
-        $asana->setClient($service = Mockery::mock('\Asana\Client'));
+        $asana->setClient($service = Mockery::mock('\GuzzleHttp\Client'));
 
         $this->expectException(TokenExpiredException::class);
 
@@ -67,14 +67,14 @@ class OauthTest extends TestCase
     public function it_should_provide_an_authorization_url()
     {
         // Given
-        $asana = new Client(['clientId' => 1, 'clientSecret' => 'secret', 'redirectUrl' => 'none'], new AccessToken(), [], $dispatcher = Mockery::mock('\Asana\Dispatcher\OAuthDispatcher'));
+        $asana = new Client(['clientId' => 1, 'clientSecret' => 'secret', 'redirectUri' => 'none'], new AccessToken(), $provider = Mockery::mock('\TestMonitor\Asana\Provider\AsanaProvider'));
 
-        $state = 'somestate';
+        $options = ['state' => 'somestate', 'scope' => 'incoming-webhook'];
 
-        $dispatcher->shouldReceive('authorizationUrl')->with($state)->andReturn('https://asana.authorization.url');
+        $provider->shouldReceive('getAuthorizationUrl')->with($options)->andReturn('https://asana.authorization.url');
 
         // When
-        $url = $asana->authorizationUrl($state);
+        $url = $asana->authorizationUrl($options);
 
         // Then
         $this->assertEquals('https://asana.authorization.url', $url);
@@ -84,28 +84,26 @@ class OauthTest extends TestCase
     public function it_should_fetch_a_token()
     {
         // Given
-        $dispatcher = Mockery::mock('\Asana\Dispatcher\OAuthDispatcher');
+        $provider = Mockery::mock('\TestMonitor\Asana\Provider\AsanaProvider');
 
-        $newToken = new AccessToken('12345', '567890', time() + 3600);
+        $token = Mockery::mock('\League\OAuth2\Client\Token\AccessToken');
 
-        $dispatcher->accessToken = $newToken->accessToken;
-        $dispatcher->refreshToken = $newToken->refreshToken;
-        $dispatcher->expiresIn = 3600;
+        $token->shouldReceive('getToken')->once()->andReturn('12345');
+        $token->shouldReceive('getRefreshToken')->once()->andReturn('123456');
+        $token->shouldReceive('getExpires')->once()->andReturn(time() + 3600);
 
-        $code = 'somecode';
+        $provider->shouldReceive('getAccessToken')->with('authorization_code', ['code' => '123'])->once()->andReturn($token);
 
-        $dispatcher->shouldReceive('fetchToken')->once()->andReturn($newToken->accessToken);
-
-        $asana = new Client(['clientId' => 1, 'clientSecret' => 'secret', 'redirectUrl' => 'none'], new AccessToken(), [], $dispatcher);
+        $asana = new Client(['clientId' => 1, 'clientSecret' => 'secret', 'redirectUri' => 'none'], new AccessToken(), $provider);
 
         // When
-        $token = $asana->fetchToken($code);
+        $token = $asana->fetchToken('123');
 
         // Then
         $this->assertInstanceOf(AccessToken::class, $token);
         $this->assertFalse($token->expired());
-        $this->assertEquals($token->accessToken, $newToken->accessToken);
-        $this->assertEquals($token->refreshToken, $newToken->refreshToken);
+        $this->assertEquals('12345', $token->accessToken);
+        $this->assertEquals('123456', $token->refreshToken);
     }
 
     /** @test */
@@ -114,15 +112,15 @@ class OauthTest extends TestCase
         // Given
         $oldToken = new AccessToken('12345', '567890', time() - 3600);
 
-        $asana = new Client(['clientId' => 1, 'clientSecret' => 'secret', 'redirectUrl' => 'none'], $oldToken, [], $dispatcher = Mockery::mock('\Asana\Dispatcher\OAuthDispatcher'));
+        $asana = new Client(['clientId' => 1, 'clientSecret' => 'secret', 'redirectUri' => 'none'], $oldToken, $provider = Mockery::mock('\TestMonitor\Asana\Provider\AsanaProvider'));
 
-        $newToken = new AccessToken('23456', '678901', time() + 3600);
+        $token = Mockery::mock('\League\OAuth2\Client\Token\AccessToken');
 
-        $dispatcher->accessToken = $newToken->accessToken;
-        $dispatcher->refreshToken = $newToken->refreshToken;
-        $dispatcher->expiresIn = 3600;
+        $token->shouldReceive('getToken')->once()->andReturn('12345');
+        $token->shouldReceive('getRefreshToken')->once()->andReturn('123456');
+        $token->shouldReceive('getExpires')->once()->andReturn(time() + 3600);
 
-        $dispatcher->shouldReceive('refreshAccessToken')->once()->andReturn($newToken->accessToken);
+        $provider->shouldReceive('getAccessToken')->with('refresh_token', ['refresh_token' => '567890'])->once()->andReturn($token);
 
         // When
         $token = $asana->refreshToken();
@@ -130,8 +128,8 @@ class OauthTest extends TestCase
         // Then
         $this->assertInstanceOf(AccessToken::class, $token);
         $this->assertFalse($token->expired());
-        $this->assertEquals($token->accessToken, $newToken->accessToken);
-        $this->assertEquals($token->refreshToken, $newToken->refreshToken);
+        $this->assertEquals('12345', $token->accessToken);
+        $this->assertEquals('123456', $token->refreshToken);
     }
 
     /** @test */

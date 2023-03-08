@@ -2,14 +2,8 @@
 
 namespace TestMonitor\Asana\Actions;
 
-use Asana\Errors\NotFoundError;
-use Asana\Errors\ForbiddenError;
-use Asana\Errors\InvalidTokenError;
 use TestMonitor\Asana\Resources\Task;
-use Asana\Errors\NoAuthorizationError;
 use TestMonitor\Asana\Transforms\TransformsTasks;
-use TestMonitor\Asana\Exceptions\NotFoundException;
-use TestMonitor\Asana\Exceptions\UnauthorizedException;
 
 trait ManagesTasks
 {
@@ -19,26 +13,19 @@ trait ManagesTasks
      * Get a list of of tasks for a project.
      *
      * @param string $projectGid
-     * @param string $fields
      *
      * @throws \TestMonitor\Asana\Exceptions\NotFoundException
      * @throws \TestMonitor\Asana\Exceptions\UnauthorizedException
      *
      * @return \TestMonitor\Asana\Resources\Task[]
      */
-    public function tasks($projectGid, $fields = 'name,notes,html_notes,completed,projects.gid')
+    public function tasks($projectGid)
     {
-        try {
-            $tasks = $this->client()->tasks->findByProject($projectGid, ['opt_fields' => $fields]);
+        $tasks = $this->get("projects/{$projectGid}/tasks");
 
-            return array_map(function ($task) {
-                return $this->fromAsanaTask($task);
-            }, iterator_to_array($tasks));
-        } catch (NoAuthorizationError|InvalidTokenError|ForbiddenError $exception) {
-            throw new UnauthorizedException($exception->getMessage());
-        } catch (NotFoundError $exception) {
-            throw new NotFoundException($exception->getMessage());
-        }
+        return array_map(function ($task) {
+            return $this->fromAsanaTask($task);
+        }, $tasks['data']);
     }
 
     /**
@@ -52,17 +39,11 @@ trait ManagesTasks
      *
      * @return \TestMonitor\Asana\Resources\Task
      */
-    public function task($gid, $fields = 'name,notes,html_notes,completed,projects.gid'): Task
+    public function task($gid): Task
     {
-        try {
-            $task = $this->client()->tasks->findById($gid, ['opt_fields' => $fields]);
+        $task = $this->get("tasks/{$gid}");
 
-            return $this->fromAsanaTask($task);
-        } catch (NoAuthorizationError|InvalidTokenError|ForbiddenError $exception) {
-            throw new UnauthorizedException($exception->getMessage());
-        } catch (NotFoundError $exception) {
-            throw new NotFoundException($exception->getMessage());
-        }
+        return $this->fromAsanaTask($task['data']);
     }
 
     /**
@@ -70,7 +51,6 @@ trait ManagesTasks
      *
      * @param \TestMonitor\Asana\Resources\Task $task
      * @param string $projectGid
-     * @param string $fields
      *
      * @throws \TestMonitor\Asana\Exceptions\NotFoundException
      * @throws \TestMonitor\Asana\Exceptions\UnauthorizedException
@@ -79,17 +59,10 @@ trait ManagesTasks
      */
     public function createTask(
         Task $task,
-        string $projectGid,
-        $fields = 'name,notes,html_notes,completed,projects.gid'
+        string $projectGid
     ): Task {
-        try {
-            $task = $this->client()->tasks->create($this->toAsanaTask($task, $projectGid), ['opt_fields' => $fields]);
+        $task = $this->post('tasks', $this->toAsanaTask($task, $projectGid));
 
-            return $this->fromAsanaTask($task);
-        } catch (NoAuthorizationError|InvalidTokenError|ForbiddenError $exception) {
-            throw new UnauthorizedException($exception->getMessage());
-        } catch (NotFoundError $exception) {
-            throw new NotFoundException($exception->getMessage());
-        }
+        return $this->fromAsanaTask($task['data']);
     }
 }

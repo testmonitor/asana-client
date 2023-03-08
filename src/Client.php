@@ -93,14 +93,19 @@ class Client
     }
 
     /**
-     * Create a new authorization URL for the given state.
+     * Create a new authorization URL for the given scope and state.
      *
-     * @param $state
+     * @param string $scope
+     * @param string $state
+     * @param array $options
      * @return string
      */
-    public function authorizationUrl($state = [])
+    public function authorizationUrl(string $scope, string $state = '', array $options = [])
     {
-        return $this->provider->getAuthorizationUrl($state);
+        return $this->provider->getAuthorizationUrl(array_merge([
+            'scope' => $scope,
+            'state' => $state,
+        ], $options));
     }
 
     /**

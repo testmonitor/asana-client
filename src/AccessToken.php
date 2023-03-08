@@ -2,6 +2,8 @@
 
 namespace TestMonitor\Asana;
 
+use League\OAuth2\Client\Token\AccessToken as TokenAccessToken;
+
 class AccessToken
 {
     /**
@@ -37,7 +39,7 @@ class AccessToken
      * @param \League\OAuth2\Client\Token\AccessToken $token
      * @return \TestMonitor\Asana\AccessToken
      */
-    public static function fromAsana(array $token)
+    public static function fromAsana(TokenAccessToken $token)
     {
         return new self(
             $token->getToken(),

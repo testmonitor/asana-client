@@ -74,7 +74,7 @@ class OauthTest extends TestCase
         $provider->shouldReceive('getAuthorizationUrl')->with($options)->andReturn('https://asana.authorization.url');
 
         // When
-        $url = $asana->authorizationUrl($options);
+        $url = $asana->authorizationUrl($options['scope'], $options['state'], []);
 
         // Then
         $this->assertEquals('https://asana.authorization.url', $url);

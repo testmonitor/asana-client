@@ -24,14 +24,24 @@ class Client
     protected $token;
 
     /**
-     * @var string
+     * @var array
      */
-    protected $enable = 'string_ids,new_user_task_lists,new_project_templates';
+    protected $defaultEnabled = ['string_ids', 'new_user_task_lists', 'new_project_templates'];
 
     /**
-     * @var string
+     * @var array
      */
-    protected $disable = 'new_sections';
+    protected $defaultDisabled = ['new_sections'];
+
+    /**
+     * @var array|null
+     */
+    protected $enable = null;
+
+    /**
+     * @var array|null
+     */
+    protected $disable = null;
 
     /**
      * @var string
@@ -66,8 +76,8 @@ class Client
         array $credentials,
         AccessToken $token = null,
         AsanaProvider $provider = null,
-        string $enable = null,
-        string $disable = null
+        array $enable = null,
+        array $disable = null
     ) {
         $this->token = $token;
 
@@ -78,8 +88,8 @@ class Client
             'refresh_token' => $token->refreshToken ?? null,
         ]);
 
-        $this->enable = $enable ?? $this->enable;
-        $this->disable = $disable ?? $this->disable;
+        $this->enable = $enable;
+        $this->disable = $disable;
     }
 
     /**
@@ -170,8 +180,8 @@ class Client
                 'Authorization' => 'Bearer ' . $this->token->accessToken,
                 'Accept' => 'application/json',
                 'Content-Type' => 'application/json',
-                'asana-enable' => $this->enable,
-                'asana-disable' => $this->disable,
+                'asana-enable' => $this->enabled(),
+                'asana-disable' => $this->disabled(),
             ],
         ]);
     }
@@ -182,6 +192,26 @@ class Client
     public function setClient(\GuzzleHttp\Client $client)
     {
         $this->client = $client;
+    }
+
+    /**
+     * Get the Asana-Enabled headers.
+     *
+     * @return string
+     */
+    protected function enabled(): string
+    {
+        return implode(',', $this->enable ?? $this->defaultEnabled);
+    }
+
+    /**
+     * Get the Asana-Disabled headers.
+     *
+     * @return string
+     */
+    protected function disabled(): string
+    {
+        return implode(',', $this->disable ?? $this->defaultDisabled);
     }
 
     /**

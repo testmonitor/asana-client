@@ -2,6 +2,7 @@
 
 namespace TestMonitor\Asana\Transforms;
 
+use stdClass;
 use TestMonitor\Asana\Validator;
 use TestMonitor\Asana\Resources\Task;
 
@@ -23,19 +24,19 @@ trait TransformsTasks
     }
 
     /**
-     * @param array $task
+     * @param \stdClass $task
      * @return \TestMonitor\Asana\Resources\Task
      */
-    protected function fromAsanaTask(array $task): Task
+    protected function fromAsanaTask(stdClass $task): Task
     {
-        Validator::keyExists($task, 'completed');
+        Validator::hasProperty($task, 'completed');
 
         return new Task([
-            'completed' => $task['completed'],
-            'name' => $task['name'] ?? '',
-            'notes' => $task['notes'] ?? '',
-            'projectGid' => $task['projects'][0]['gid'] ?? '',
-            'gid' => $task['gid'] ?? '',
+            'completed' => $task->completed,
+            'name' => $task->name ?? '',
+            'notes' => $task->notes ?? '',
+            'projectGid' => $task->projects[0]->gid ?? '',
+            'gid' => $task->gid ?? '',
         ]);
     }
 }

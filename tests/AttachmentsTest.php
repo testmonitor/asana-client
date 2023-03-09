@@ -3,7 +3,9 @@
 namespace TestMonitor\Asana\Tests;
 
 use Mockery;
+use Asana\Errors\NotFoundError;
 use PHPUnit\Framework\TestCase;
+use Asana\Errors\NoAuthorizationError;
 use TestMonitor\Asana\Resources\Attachment;
 use TestMonitor\Asana\Exceptions\NotFoundException;
 use TestMonitor\Asana\Exceptions\UnauthorizedException;
@@ -21,7 +23,7 @@ class AttachmentsTest extends TestCase
         $this->token = Mockery::mock('\TestMonitor\Asana\AccessToken');
         $this->token->shouldReceive('expired')->andReturnFalse();
 
-        $this->attachment = ['gid' => 1, 'name' => 'logo.png'];
+        $this->attachment = (object) ['gid' => 1, 'name' => 'logo.png'];
     }
 
     public function tearDown(): void
@@ -35,24 +37,22 @@ class AttachmentsTest extends TestCase
         // Given
         $asana = new \TestMonitor\Asana\Client(['clientId' => 1, 'clientSecret' => 'secret', 'redirectUrl' => 'none'], $this->token);
 
-        $asana->setClient($service = Mockery::mock('\GuzzleHttp\Client'));
+        $asana->setClient($service = Mockery::mock('\Asana\Client'));
 
         $path = __DIR__ . '/files/logo.png';
 
-        $service->shouldReceive('request')->once()->andReturn(
-            $response = Mockery::mock('Psr\Http\Message\ResponseInterface')
+        $service->attachments = Mockery::mock('\Asana\Resources\Attachments');
+        $service->attachments->shouldReceive('createOnTask')->once()->with('12345', file_get_contents($path), basename($path), mime_content_type($path))->andReturn(
+            $this->attachment
         );
-
-        $response->shouldReceive('getStatusCode')->andReturn(200);
-        $response->shouldReceive('getBody')->andReturn(json_encode(['data' => $this->attachment]));
 
         // When
         $attachment = $asana->addAttachment(__DIR__ . '/files/logo.png', '12345');
 
         // Then
         $this->assertInstanceOf(Attachment::class, $attachment);
-        $this->assertEquals($this->attachment['gid'], $attachment->gid);
-        $this->assertEquals($this->attachment['name'], $attachment->name);
+        $this->assertEquals($this->attachment->gid, $attachment->gid);
+        $this->assertEquals($this->attachment->name, $attachment->name);
     }
 
     /** @test */
@@ -61,15 +61,13 @@ class AttachmentsTest extends TestCase
         // Given
         $asana = new \TestMonitor\Asana\Client(['clientId' => 1, 'clientSecret' => 'secret', 'redirectUrl' => 'none'], $this->token);
 
-        $asana->setClient($service = Mockery::mock('\GuzzleHttp\Client'));
+        $asana->setClient($service = Mockery::mock('\Asana\Client'));
 
         $path = __DIR__ . '/files/logo.png';
 
-        $service->shouldReceive('request')->once()->andReturn(
-            $response = Mockery::mock('Psr\Http\Message\ResponseInterface')
-        )->andThrow(new UnauthorizedException());
-
-        $response->shouldReceive('getStatusCode')->andReturn(403);
+        $service->attachments = Mockery::mock('\Asana\Resources\Attachments');
+        $service->attachments->shouldReceive('createOnTask')->once()->with('12345', file_get_contents($path), basename($path), mime_content_type($path))
+            ->andThrow(new NoAuthorizationError([]));
 
         $this->expectException(UnauthorizedException::class);
 
@@ -83,15 +81,13 @@ class AttachmentsTest extends TestCase
         // Given
         $asana = new \TestMonitor\Asana\Client(['clientId' => 1, 'clientSecret' => 'secret', 'redirectUrl' => 'none'], $this->token);
 
-        $asana->setClient($service = Mockery::mock('\GuzzleHttp\Client'));
+        $asana->setClient($service = Mockery::mock('\Asana\Client'));
 
         $path = __DIR__ . '/files/logo.png';
 
-        $service->shouldReceive('request')->once()->andReturn(
-            $response = Mockery::mock('Psr\Http\Message\ResponseInterface')
-        )->andThrow(new NotFoundException());
-
-        $response->shouldReceive('getStatusCode')->andReturn(404);
+        $service->attachments = Mockery::mock('\Asana\Resources\Attachments');
+        $service->attachments->shouldReceive('createOnTask')->once()->with('12345', file_get_contents($path), basename($path), mime_content_type($path))
+            ->andThrow(new NotFoundError([]));
 
         $this->expectException(NotFoundException::class);
 

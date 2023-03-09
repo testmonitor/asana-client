@@ -4,8 +4,10 @@ namespace TestMonitor\Asana\Tests;
 
 use Mockery;
 use TestMonitor\Asana\Client;
+use Asana\Errors\NotFoundError;
 use PHPUnit\Framework\TestCase;
 use TestMonitor\Asana\Resources\Task;
+use Asana\Errors\NoAuthorizationError;
 use TestMonitor\Asana\Exceptions\NotFoundException;
 use TestMonitor\Asana\Exceptions\UnauthorizedException;
 
@@ -19,6 +21,8 @@ class TasksTest extends TestCase
 
     protected $tasks;
 
+    protected $optFields = 'name,notes,html_notes,completed,projects.gid';
+
     protected function setUp(): void
     {
         parent::setUp();
@@ -26,11 +30,17 @@ class TasksTest extends TestCase
         $this->token = Mockery::mock('\TestMonitor\Asana\AccessToken');
         $this->token->shouldReceive('expired')->andReturnFalse();
 
-        $this->project = ['gid' => '10', 'Project'];
+        $this->project = (object) ['gid' => '10', 'Project'];
 
-        $this->task = ['gid' => '1', 'name' => 'Task', 'notes' => 'Notes', 'completed' => false];
+        $this->task = (object) ['gid' => '1', 'name' => 'Task', 'notes' => 'Notes', 'completed' => false];
 
-        $this->tasks = [$this->task];
+        $this->tasks = Mockery::mock('\Asana\Iterator\ItemIterator');
+        $this->tasks->shouldReceive('rewind')->andReturnNull();
+        $this->tasks->shouldReceive('next')->andReturnNull();
+        $this->tasks->shouldReceive('valid')->atMost()->times(1)->andReturnTrue();
+        $this->tasks->shouldReceive('valid')->andReturnFalse();
+        $this->tasks->shouldReceive('key')->andReturn(0);
+        $this->tasks->shouldReceive('current')->andReturn($this->task);
     }
 
     public function tearDown(): void
@@ -44,23 +54,21 @@ class TasksTest extends TestCase
         // Given
         $asana = new Client(['clientId' => 1, 'clientSecret' => 'secret', 'redirectUrl' => 'none'], $this->token);
 
-        $asana->setClient($service = Mockery::mock('\GuzzleHttp\Client'));
+        $asana->setClient($service = Mockery::mock('\Asana\Client'));
 
-        $service->shouldReceive('request')->once()->with('GET', "projects/{$this->project['gid']}/tasks", [])->andReturn(
-            $response = Mockery::mock('Psr\Http\Message\ResponseInterface')
+        $service->tasks = Mockery::mock('\Asana\Resources\Tasks');
+        $service->tasks->shouldReceive('findByProject')->once()->with($this->project->gid, ['opt_fields' => $this->optFields])->andReturn(
+            $this->tasks
         );
 
-        $response->shouldReceive('getStatusCode')->andReturn(200);
-        $response->shouldReceive('getBody')->andReturn(json_encode(['data' => $this->tasks]));
-
         // When
-        $tasks = $asana->tasks($this->project['gid']);
+        $tasks = $asana->tasks($this->project->gid);
 
         // Then
         $this->assertIsArray($tasks);
         $this->assertCount(1, $tasks);
         $this->assertInstanceOf(Task::class, $tasks[0]);
-        $this->assertEquals($this->task['gid'], $tasks[0]->gid);
+        $this->assertEquals($this->task->gid, $tasks[0]->gid);
     }
 
     /** @test */
@@ -69,15 +77,16 @@ class TasksTest extends TestCase
         // Given
         $asana = new Client(['clientId' => 1, 'clientSecret' => 'secret', 'redirectUrl' => 'none'], $this->token);
 
-        $asana->setClient($service = Mockery::mock('\GuzzleHttp\Client'));
+        $asana->setClient($service = Mockery::mock('\Asana\Client'));
 
-        $service->shouldReceive('request')->once()->with('GET', "projects/{$this->project['gid']}/tasks", [])
-            ->andThrow(new UnauthorizedException());
+        $service->tasks = Mockery::mock('\Asana\Resources\Tasks');
+        $service->tasks->shouldReceive('findByProject')->once()->with($this->project->gid, ['opt_fields' => $this->optFields])
+            ->andThrow(new NoAuthorizationError([]));
 
         $this->expectException(UnauthorizedException::class);
 
         // When
-        $tasks = $asana->tasks($this->project['gid']);
+        $tasks = $asana->tasks($this->project->gid);
     }
 
     /** @test */
@@ -86,10 +95,11 @@ class TasksTest extends TestCase
         // Given
         $asana = new Client(['clientId' => 1, 'clientSecret' => 'secret', 'redirectUrl' => 'none'], $this->token);
 
-        $asana->setClient($service = Mockery::mock('\GuzzleHttp\Client'));
+        $asana->setClient($service = Mockery::mock('\Asana\Client'));
 
-        $service->shouldReceive('request')->once()->with('GET', 'projects/unknown/tasks', [])
-            ->andThrow(new NotFoundException());
+        $service->tasks = Mockery::mock('\Asana\Resources\Tasks');
+        $service->tasks->shouldReceive('findByProject')->once()->with('unknown', ['opt_fields' => $this->optFields])
+            ->andThrow(new NotFoundError([]));
 
         $this->expectException(NotFoundException::class);
 
@@ -103,21 +113,19 @@ class TasksTest extends TestCase
         // Given
         $asana = new Client(['clientId' => 1, 'clientSecret' => 'secret', 'redirectUrl' => 'none'], $this->token);
 
-        $asana->setClient($service = Mockery::mock('\GuzzleHttp\Client'));
+        $asana->setClient($service = Mockery::mock('\Asana\Client'));
 
-        $service->shouldReceive('request')->once()->with('GET', "tasks/{$this->task['gid']}", [])->andReturn(
-            $response = Mockery::mock('Psr\Http\Message\ResponseInterface')
+        $service->tasks = Mockery::mock('\Asana\Resources\Tasks');
+        $service->tasks->shouldReceive('findById')->once()->with($this->task->gid, ['opt_fields' => $this->optFields])->andReturn(
+            $this->task
         );
 
-        $response->shouldReceive('getStatusCode')->andReturn(200);
-        $response->shouldReceive('getBody')->andReturn(json_encode(['data' => $this->task]));
-
         // When
-        $task = $asana->task($this->task['gid']);
+        $task = $asana->task($this->task->gid);
 
         // Then
         $this->assertInstanceOf(Task::class, $task);
-        $this->assertEquals($this->task['gid'], $task->gid);
+        $this->assertEquals($this->task->gid, $task->gid);
     }
 
     /** @test */
@@ -126,15 +134,16 @@ class TasksTest extends TestCase
         // Given
         $asana = new Client(['clientId' => 1, 'clientSecret' => 'secret', 'redirectUrl' => 'none'], $this->token);
 
-        $asana->setClient($service = Mockery::mock('\GuzzleHttp\Client'));
+        $asana->setClient($service = Mockery::mock('\Asana\Client'));
 
-        $service->shouldReceive('request')->once()->with('GET', "tasks/{$this->task['gid']}", [])
-            ->andThrow(new UnauthorizedException());
+        $service->tasks = Mockery::mock('\Asana\Resources\Tasks');
+        $service->tasks->shouldReceive('findById')->once()->with($this->task->gid, ['opt_fields' => $this->optFields])
+            ->andThrow(new NoAuthorizationError([]));
 
         $this->expectException(UnauthorizedException::class);
 
         // When
-        $task = $asana->task($this->task['gid']);
+        $task = $asana->task($this->task->gid);
     }
 
     /** @test */
@@ -143,10 +152,11 @@ class TasksTest extends TestCase
         // Given
         $asana = new Client(['clientId' => 1, 'clientSecret' => 'secret', 'redirectUrl' => 'none'], $this->token);
 
-        $asana->setClient($service = Mockery::mock('\GuzzleHttp\Client'));
+        $asana->setClient($service = Mockery::mock('\Asana\Client'));
 
-        $service->shouldReceive('request')->once()->with('GET', 'tasks/unknown', [])
-            ->andThrow(new NotFoundException());
+        $service->tasks = Mockery::mock('\Asana\Resources\Tasks');
+        $service->tasks->shouldReceive('findById')->once()->with('unknown', ['opt_fields' => $this->optFields])
+            ->andThrow(new NotFoundError([]));
 
         $this->expectException(NotFoundException::class);
 
@@ -160,26 +170,29 @@ class TasksTest extends TestCase
         // Given
         $asana = new Client(['clientId' => 1, 'clientSecret' => 'secret', 'redirectUrl' => 'none'], $this->token);
 
-        $asana->setClient($service = Mockery::mock('\GuzzleHttp\Client'));
+        $asana->setClient($service = Mockery::mock('\Asana\Client'));
 
-        $service->shouldReceive('request')->once()->andReturn(
-            $response = Mockery::mock('Psr\Http\Message\ResponseInterface')
+        $service->tasks = Mockery::mock('\Asana\Resources\Tasks');
+        $service->tasks->shouldReceive('create')->once()->with([
+            'completed' => $this->task->completed,
+            'name' => $this->task->name,
+            'html_notes' => "<body>{$this->task->notes}</body>",
+            'projects' => [$this->project->gid],
+        ], ['opt_fields' => $this->optFields])->andReturn(
+            $this->task
         );
-
-        $response->shouldReceive('getStatusCode')->andReturn(201);
-        $response->shouldReceive('getBody')->andReturn(json_encode(['data' => $this->task]));
 
         // When
         $task = $asana->createTask(new Task([
-            'completed' => $this->task['completed'],
-            'name' => $this->task['name'],
-            'notes' => $this->task['notes'],
-            'projectGid' => $this->project['gid'],
-        ]), $this->project['gid']);
+            'completed' => $this->task->completed,
+            'name' => $this->task->name,
+            'notes' => $this->task->notes,
+            'projectGid' => $this->project->gid,
+        ]), $this->project->gid);
 
         // Then
         $this->assertInstanceOf(Task::class, $task);
-        $this->assertEquals($this->task['gid'], $task->gid);
+        $this->assertEquals($this->task->gid, $task->gid);
     }
 
     /** @test */
@@ -188,20 +201,26 @@ class TasksTest extends TestCase
         // Given
         $asana = new Client(['clientId' => 1, 'clientSecret' => 'secret', 'redirectUrl' => 'none'], $this->token);
 
-        $asana->setClient($service = Mockery::mock('\GuzzleHttp\Client'));
+        $asana->setClient($service = Mockery::mock('\Asana\Client'));
 
-        $service->shouldReceive('request')->once()
-            ->andThrow(new UnauthorizedException());
+        $service->tasks = Mockery::mock('\Asana\Resources\Tasks');
+        $service->tasks->shouldReceive('create')->once()->with([
+            'completed' => $this->task->completed,
+            'name' => $this->task->name,
+            'html_notes' => "<body>{$this->task->notes}</body>",
+            'projects' => [$this->project->gid],
+        ], ['opt_fields' => $this->optFields])
+            ->andThrow(new NoAuthorizationError([]));
 
         $this->expectException(UnauthorizedException::class);
 
         // When
         $asana->createTask(new Task([
-            'completed' => $this->task['completed'],
-            'name' => $this->task['name'],
-            'notes' => $this->task['notes'],
-            'projectGid' => $this->project['gid'],
-        ]), $this->project['gid']);
+            'completed' => $this->task->completed,
+            'name' => $this->task->name,
+            'notes' => $this->task->notes,
+            'projectGid' => $this->project->gid,
+        ]), $this->project->gid);
     }
 
     /** @test */
@@ -210,18 +229,24 @@ class TasksTest extends TestCase
         // Given
         $asana = new Client(['clientId' => 1, 'clientSecret' => 'secret', 'redirectUrl' => 'none'], $this->token);
 
-        $asana->setClient($service = Mockery::mock('\GuzzleHttp\Client'));
+        $asana->setClient($service = Mockery::mock('\Asana\Client'));
 
-        $service->shouldReceive('request')->once()
-            ->andThrow(new NotFoundException());
+        $service->tasks = Mockery::mock('\Asana\Resources\Tasks');
+        $service->tasks->shouldReceive('create')->once()->with([
+            'completed' => $this->task->completed,
+            'name' => $this->task->name,
+            'html_notes' => "<body>{$this->task->notes}</body>",
+            'projects' => ['unknown'],
+        ], ['opt_fields' => $this->optFields])
+            ->andThrow(new NotFoundError([]));
 
         $this->expectException(NotFoundException::class);
 
         // When
         $asana->createTask(new Task([
-            'completed' => $this->task['completed'],
-            'name' => $this->task['name'],
-            'notes' => $this->task['notes'],
+            'completed' => $this->task->completed,
+            'name' => $this->task->name,
+            'notes' => $this->task->notes,
         ]), 'unknown');
     }
 }

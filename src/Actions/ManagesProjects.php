@@ -2,8 +2,14 @@
 
 namespace TestMonitor\Asana\Actions;
 
+use Asana\Errors\NotFoundError;
+use Asana\Errors\ForbiddenError;
+use Asana\Errors\InvalidTokenError;
+use Asana\Errors\NoAuthorizationError;
 use TestMonitor\Asana\Resources\Project;
+use TestMonitor\Asana\Exceptions\NotFoundException;
 use TestMonitor\Asana\Transforms\TransformsProjects;
+use TestMonitor\Asana\Exceptions\UnauthorizedException;
 
 trait ManagesProjects
 {
@@ -21,11 +27,17 @@ trait ManagesProjects
      */
     public function projects($workspaceGid)
     {
-        $projects = $this->get("workspaces/{$workspaceGid}/projects");
+        try {
+            $projects = $this->client()->projects->findByWorkspace($workspaceGid);
 
-        return array_map(function ($project) {
-            return $this->fromAsanaProject($project);
-        }, $projects['data']);
+            return array_map(function ($project) {
+                return $this->fromAsanaProject($project);
+            }, iterator_to_array($projects));
+        } catch (NoAuthorizationError|InvalidTokenError|ForbiddenError $exception) {
+            throw new UnauthorizedException($exception->getMessage());
+        } catch (NotFoundError $exception) {
+            throw new NotFoundException($exception->getMessage());
+        }
     }
 
     /**
@@ -40,8 +52,14 @@ trait ManagesProjects
      */
     public function project($gid): Project
     {
-        $project = $this->get("projects/{$gid}");
+        try {
+            $project = $this->client()->projects->findById($gid);
 
-        return $this->fromAsanaProject($project['data']);
+            return $this->fromAsanaProject($project);
+        } catch (NoAuthorizationError|InvalidTokenError|ForbiddenError $exception) {
+            throw new UnauthorizedException($exception->getMessage());
+        } catch (NotFoundError $exception) {
+            throw new NotFoundException($exception->getMessage());
+        }
     }
 }

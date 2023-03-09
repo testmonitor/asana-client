@@ -6,10 +6,7 @@ Thumbs.db
 .php_cs.cache
 
 phpunit.xml
-.phpunit.cache
-*.cache
+.phpunit.result.cache
 /build
 
 /.idea
-
-test.php

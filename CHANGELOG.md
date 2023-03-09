@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [1.3] - 2023-03-09
+### Updated
+- Set "new_memberships" as a default in header configuration
+- Update to asana/php-asana 1.0.6
+
 ## [1.2.2] - 2022-06-20
 ### Updated
 - Set "new_project_templates" as a default in header configuration
@@ -27,4 +32,3 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## [1.0.0] - 2019-12-09
 ### Added
 - Initial version.
-

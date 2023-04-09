@@ -4,8 +4,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [1.3.1] - 2023-04-09
+### Updated
+- Set "new_goal_memberships" as a default in header configuration
 
-## [1.3] - 2023-03-09
+## [1.3.0] - 2023-03-09
 ### Updated
 - Set "new_memberships" as a default in header configuration
 - Update to asana/php-asana 1.0.6

@@ -7,8 +7,9 @@ Thumbs.db
 
 phpunit.xml
 .phpunit.result.cache
-.phpunit.cache/*
+.phpunit.cache
 /build
+/logs
 
 /.idea
  test.php

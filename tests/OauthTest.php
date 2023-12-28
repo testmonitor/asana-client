@@ -6,9 +6,9 @@ use Mockery;
 use TestMonitor\Asana\Client;
 use PHPUnit\Framework\TestCase;
 use TestMonitor\Asana\AccessToken;
-use TestMonitor\Asana\Exceptions\InvalidRefreshTokenException;
 use TestMonitor\Asana\Exceptions\TokenExpiredException;
 use TestMonitor\Asana\Exceptions\UnauthorizedException;
+use TestMonitor\Asana\Exceptions\InvalidRefreshTokenException;
 
 class OauthTest extends TestCase
 {

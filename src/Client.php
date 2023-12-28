@@ -2,13 +2,13 @@
 
 namespace TestMonitor\Asana;
 
+use Exception;
 use Asana\Client as AsanaClient;
 use Asana\Dispatcher\OAuthDispatcher;
 use Asana\Dispatcher\AccessTokenDispatcher;
-use Exception;
-use TestMonitor\Asana\Exceptions\InvalidRefreshTokenException;
 use TestMonitor\Asana\Exceptions\TokenExpiredException;
 use TestMonitor\Asana\Exceptions\UnauthorizedException;
+use TestMonitor\Asana\Exceptions\InvalidRefreshTokenException;
 
 class Client
 {

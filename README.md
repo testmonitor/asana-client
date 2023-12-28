@@ -2,13 +2,13 @@
 
 [![Latest Stable Version](https://poser.pugx.org/testmonitor/asana-client/v/stable)](https://packagist.org/packages/testmonitor/asana-client)
 [![CircleCI](https://img.shields.io/circleci/project/github/testmonitor/asana-client.svg)](https://circleci.com/gh/testmonitor/asana-client)
-[![Travis Build](https://travis-ci.com/testmonitor/asana-client.svg?branch=master)](https://travis-ci.com/testmonitor/asana-client)
+[![Travis Build](https://travis-ci.com/testmonitor/asana-client.svg?branch=master)](https://app.travis-ci.com/github/testmonitor/asana-client)
 [![Code Coverage](https://scrutinizer-ci.com/g/testmonitor/asana-client/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/testmonitor/asana-client/?branch=master)
 [![Code Quality](https://scrutinizer-ci.com/g/testmonitor/asana-client/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/testmonitor/asana-client/?branch=master)
 [![StyleCI](https://styleci.io/repos/223037397/shield)](https://styleci.io/repos/223037397)
 [![License](https://poser.pugx.org/testmonitor/asana-client/license)](https://packagist.org/packages/testmonitor/asana-client)
 
-This package provides a very basic, convenient, and unified wrapper for the [Official Asana PHP client library](https://github.com/Asana/php-asana). 
+This package provides a very basic, convenient, and unified wrapper for the [Official Asana PHP client library](https://github.com/Asana/php-asana).
 
 ## Table of Contents
 
@@ -20,7 +20,7 @@ This package provides a very basic, convenient, and unified wrapper for the [Off
 - [Contributing](#contributing)
 - [Credits](#credits)
 - [License](#license)
-  
+
 ## Installation
 
 To install the client you need to require the package using composer:
@@ -85,7 +85,7 @@ if ($token->expired()) {
 }
 ```
 
-The new token will be valid again for the next hour. 
+The new token will be valid again for the next hour.
 
 ## Examples
 
@@ -110,7 +110,7 @@ $task = $asana->createTask(new \TestMonitor\Asana\Resources\Task([
 The package contains integration tests. You can run them using PHPUnit.
 
     $ vendor/bin/phpunit
-    
+
 ## Changelog
 
 Refer to [CHANGELOG](CHANGELOG.md) for more information.

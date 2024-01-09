@@ -6,9 +6,9 @@ use Mockery;
 use TestMonitor\Asana\Client;
 use PHPUnit\Framework\TestCase;
 use TestMonitor\Asana\AccessToken;
+use TestMonitor\Asana\Exceptions\InvalidTokenException;
 use TestMonitor\Asana\Exceptions\TokenExpiredException;
 use TestMonitor\Asana\Exceptions\UnauthorizedException;
-use TestMonitor\Asana\Exceptions\InvalidRefreshTokenException;
 
 class OauthTest extends TestCase
 {
@@ -160,7 +160,7 @@ class OauthTest extends TestCase
     }
 
     /** @test */
-    public function it_should_throw_an_exception_when_a_refresh_token_is_malformed()
+    public function it_should_throw_an_exception_when_refreshing_a_token_fails()
     {
         // Given
         $oldToken = new AccessToken('12345', '567890', time() - 3600);
@@ -175,7 +175,7 @@ class OauthTest extends TestCase
 
         $dispatcher->shouldReceive('refreshAccessToken')->once()->andThrow(new \Exception());
 
-        $this->expectException(InvalidRefreshTokenException::class);
+        $this->expectException(InvalidTokenException::class);
 
         // When
         $token = $asana->refreshToken();

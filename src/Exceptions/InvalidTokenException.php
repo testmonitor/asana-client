@@ -2,7 +2,7 @@
 
 namespace TestMonitor\Asana\Exceptions;
 
-class InvalidRefreshTokenException extends \Exception
+class InvalidTokenException extends \Exception
 {
     //
 }

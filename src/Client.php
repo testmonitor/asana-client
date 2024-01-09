@@ -6,9 +6,9 @@ use Exception;
 use Asana\Client as AsanaClient;
 use Asana\Dispatcher\OAuthDispatcher;
 use Asana\Dispatcher\AccessTokenDispatcher;
+use TestMonitor\Asana\Exceptions\InvalidTokenException;
 use TestMonitor\Asana\Exceptions\TokenExpiredException;
 use TestMonitor\Asana\Exceptions\UnauthorizedException;
-use TestMonitor\Asana\Exceptions\InvalidRefreshTokenException;
 
 class Client
 {
@@ -115,7 +115,7 @@ class Client
         try {
             $accessToken = $this->dispatcher->refreshAccessToken();
         } catch (Exception $e) {
-            throw new InvalidRefreshTokenException($e->getMessage());
+            throw new InvalidTokenException($e->getMessage());
         }
 
         $this->token = new AccessToken(

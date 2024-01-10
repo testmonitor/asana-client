@@ -6,6 +6,7 @@ use Mockery;
 use TestMonitor\Asana\Client;
 use PHPUnit\Framework\TestCase;
 use TestMonitor\Asana\AccessToken;
+use TestMonitor\Asana\Exceptions\InvalidTokenException;
 use TestMonitor\Asana\Exceptions\TokenExpiredException;
 use TestMonitor\Asana\Exceptions\UnauthorizedException;
 
@@ -156,5 +157,27 @@ class OauthTest extends TestCase
 
         // When
         $asana->workspaces();
+    }
+
+    /** @test */
+    public function it_should_throw_an_exception_when_refreshing_a_token_fails()
+    {
+        // Given
+        $oldToken = new AccessToken('12345', '567890', time() - 3600);
+
+        $asana = new Client(['clientId' => 1, 'clientSecret' => 'secret', 'redirectUrl' => 'none'], $oldToken, [], $dispatcher = Mockery::mock('\Asana\Dispatcher\OAuthDispatcher'));
+
+        $newToken = new AccessToken('23456', '678901', time() + 3600);
+
+        $dispatcher->accessToken = $newToken->accessToken;
+        $dispatcher->refreshToken = $newToken->refreshToken;
+        $dispatcher->expiresIn = 3600;
+
+        $dispatcher->shouldReceive('refreshAccessToken')->once()->andThrow(new \Exception());
+
+        $this->expectException(InvalidTokenException::class);
+
+        // When
+        $token = $asana->refreshToken();
     }
 }

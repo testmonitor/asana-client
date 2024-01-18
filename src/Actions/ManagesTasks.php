@@ -58,8 +58,8 @@ trait ManagesTasks
         $workspaceGid,
         $query = '',
         $limit = 100,
-        $fields = 'name,notes,html_notes,completed,projects.gid')
-    {
+        $fields = 'name,notes,html_notes,completed,projects.gid'
+    ) {
         try {
             $tasks = $this->client()->typeahead->typeaheadForWorkspace($workspaceGid, [
                 'resource_type' => 'task',

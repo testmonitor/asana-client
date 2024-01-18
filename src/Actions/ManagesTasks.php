@@ -42,6 +42,39 @@ trait ManagesTasks
     }
 
     /**
+     * Get a list of of tasks using a query.
+     *
+     * @param string $workspaceGid
+     * @param string $query
+     * @param int $limit
+     * @param string $fields
+     *
+     * @throws \TestMonitor\Asana\Exceptions\NotFoundException
+     * @throws \TestMonitor\Asana\Exceptions\UnauthorizedException
+     *
+     * @return \TestMonitor\Asana\Resources\Task[]
+     */
+    public function tasksUsingQuery($workspaceGid, $query = '', $limit = 100, $fields = 'name,notes,html_notes,completed,projects.gid')
+    {
+        try {
+            $tasks = $this->client()->typeahead->typeaheadForWorkspace($workspaceGid, [
+                'resource_type' => 'task',
+                'query' => $query,
+                'count' => $limit,
+                'opt_fields' => $fields
+            ]);
+
+            return array_map(function ($task) {
+                return $this->fromAsanaTask($task);
+            }, iterator_to_array($tasks));
+        } catch (NoAuthorizationError | InvalidTokenError | ForbiddenError $exception) {
+            throw new UnauthorizedException($exception->getMessage());
+        } catch (NotFoundError $exception) {
+            throw new NotFoundException($exception->getMessage());
+        }
+    }
+
+    /**
      * Get a single task.
      *
      * @param string $gid

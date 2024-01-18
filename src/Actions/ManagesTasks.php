@@ -61,13 +61,13 @@ trait ManagesTasks
                 'resource_type' => 'task',
                 'query' => $query,
                 'count' => $limit,
-                'opt_fields' => $fields
+                'opt_fields' => $fields,
             ]);
 
             return array_map(function ($task) {
                 return $this->fromAsanaTask($task);
             }, iterator_to_array($tasks));
-        } catch (NoAuthorizationError | InvalidTokenError | ForbiddenError $exception) {
+        } catch (NoAuthorizationError|InvalidTokenError|ForbiddenError $exception) {
             throw new UnauthorizedException($exception->getMessage());
         } catch (NotFoundError $exception) {
             throw new NotFoundException($exception->getMessage());

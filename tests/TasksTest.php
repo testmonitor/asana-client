@@ -32,7 +32,7 @@ class TasksTest extends TestCase
         $this->token = Mockery::mock('\TestMonitor\Asana\AccessToken');
         $this->token->shouldReceive('expired')->andReturnFalse();
 
-        $this->workspace = (object) ['gid' => '10', 'Workspace'];
+        $this->workspace = (object) ['gid' => '1', 'Workspace'];
         $this->project = (object) ['gid' => '10', 'Project'];
 
         $this->task = (object) ['gid' => '1', 'name' => 'Task', 'notes' => 'Notes', 'completed' => false];
@@ -118,8 +118,13 @@ class TasksTest extends TestCase
 
         $asana->setClient($service = Mockery::mock('\Asana\Client'));
 
-        $service->tasks = Mockery::mock('\Asana\Resources\Tasks');
-        $service->tasks->shouldReceive('typeaheadForWorkspace')->once()->with($this->workspace->gid, ['query' => '', 'opt_fields' => $this->optFields])->andReturn(
+        $service->typeahead = Mockery::mock('\Asana\Resources\Typeahead');
+        $service->typeahead->shouldReceive('typeaheadForWorkspace')->once()->with($this->workspace->gid, [
+            'resource_type' => 'task',
+            'query' => '',
+            'count' => 100,
+            'opt_fields' => $this->optFields,
+        ])->andReturn(
             $this->tasks
         );
 
@@ -141,9 +146,13 @@ class TasksTest extends TestCase
 
         $asana->setClient($service = Mockery::mock('\Asana\Client'));
 
-        $service->tasks = Mockery::mock('\Asana\Resources\Tasks');
-        $service->tasks->shouldReceive('typeaheadForWorkspace')->once()->with($this->workspace->gid, ['query' => '', 'opt_fields' => $this->optFields])
-            ->andThrow(new NoAuthorizationError([]));
+        $service->typeahead = Mockery::mock('\Asana\Resources\Typeahead');
+        $service->typeahead->shouldReceive('typeaheadForWorkspace')->once()->with($this->workspace->gid, [
+            'resource_type' => 'task',
+            'query' => '',
+            'count' => 100,
+            'opt_fields' => $this->optFields,
+        ])->andThrow(new NoAuthorizationError([]));
 
         $this->expectException(UnauthorizedException::class);
 
@@ -159,9 +168,13 @@ class TasksTest extends TestCase
 
         $asana->setClient($service = Mockery::mock('\Asana\Client'));
 
-        $service->tasks = Mockery::mock('\Asana\Resources\Tasks');
-        $service->tasks->shouldReceive('typeaheadForWorkspace')->once()->with('unknown', ['opt_fields' => $this->optFields])
-            ->andThrow(new NotFoundError([]));
+        $service->typeahead = Mockery::mock('\Asana\Resources\Typeahead');
+        $service->typeahead->shouldReceive('typeaheadForWorkspace')->once()->with('unknown', [
+            'resource_type' => 'task',
+            'query' => '',
+            'count' => 100,
+            'opt_fields' => $this->optFields,
+        ])->andThrow(new NotFoundError([]));
 
         $this->expectException(NotFoundException::class);
 

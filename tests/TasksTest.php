@@ -15,6 +15,8 @@ class TasksTest extends TestCase
 {
     protected $token;
 
+    protected $workspace;
+
     protected $project;
 
     protected $task;
@@ -30,6 +32,7 @@ class TasksTest extends TestCase
         $this->token = Mockery::mock('\TestMonitor\Asana\AccessToken');
         $this->token->shouldReceive('expired')->andReturnFalse();
 
+        $this->workspace = (object) ['gid' => '10', 'Workspace'];
         $this->project = (object) ['gid' => '10', 'Project'];
 
         $this->task = (object) ['gid' => '1', 'name' => 'Task', 'notes' => 'Notes', 'completed' => false];
@@ -105,6 +108,65 @@ class TasksTest extends TestCase
 
         // When
         $tasks = $asana->tasks('unknown');
+    }
+
+    /** @test */
+    public function it_should_return_a_list_of_tasks_by_using_a_query()
+    {
+        // Given
+        $asana = new Client(['clientId' => 1, 'clientSecret' => 'secret', 'redirectUrl' => 'none'], $this->token);
+
+        $asana->setClient($service = Mockery::mock('\Asana\Client'));
+
+        $service->tasks = Mockery::mock('\Asana\Resources\Tasks');
+        $service->tasks->shouldReceive('typeaheadForWorkspace')->once()->with($this->workspace->gid, ['query' => '', 'opt_fields' => $this->optFields])->andReturn(
+            $this->tasks
+        );
+
+        // When
+        $tasks = $asana->tasksUsingQuery($this->workspace->gid);
+
+        // Then
+        $this->assertIsArray($tasks);
+        $this->assertCount(1, $tasks);
+        $this->assertInstanceOf(Task::class, $tasks[0]);
+        $this->assertEquals($this->task->gid, $tasks[0]->gid);
+    }
+
+    /** @test */
+    public function it_should_throw_an_unauthorized_exception_when_client_lacks_authorization_to_get_a_list_of_tasks_by_using_a_query()
+    {
+        // Given
+        $asana = new Client(['clientId' => 1, 'clientSecret' => 'secret', 'redirectUrl' => 'none'], $this->token);
+
+        $asana->setClient($service = Mockery::mock('\Asana\Client'));
+
+        $service->tasks = Mockery::mock('\Asana\Resources\Tasks');
+        $service->tasks->shouldReceive('typeaheadForWorkspace')->once()->with($this->workspace->gid, ['query' => '', 'opt_fields' => $this->optFields])
+            ->andThrow(new NoAuthorizationError([]));
+
+        $this->expectException(UnauthorizedException::class);
+
+        // When
+        $tasks = $asana->tasksUsingQuery($this->workspace->gid);
+    }
+
+    /** @test */
+    public function it_should_throw_a_notfound_exception_when_client_cannot_get_a_list_of_tasks_for_an_unknown_workspace_by_using_a_query()
+    {
+        // Given
+        $asana = new Client(['clientId' => 1, 'clientSecret' => 'secret', 'redirectUrl' => 'none'], $this->token);
+
+        $asana->setClient($service = Mockery::mock('\Asana\Client'));
+
+        $service->tasks = Mockery::mock('\Asana\Resources\Tasks');
+        $service->tasks->shouldReceive('typeaheadForWorkspace')->once()->with('unknown', ['opt_fields' => $this->optFields])
+            ->andThrow(new NotFoundError([]));
+
+        $this->expectException(NotFoundException::class);
+
+        // When
+        $tasks = $asana->tasksUsingQuery('unknown');
     }
 
     /** @test */

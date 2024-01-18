@@ -54,7 +54,11 @@ trait ManagesTasks
      *
      * @return \TestMonitor\Asana\Resources\Task[]
      */
-    public function tasksUsingQuery($workspaceGid, $query = '', $limit = 100, $fields = 'name,notes,html_notes,completed,projects.gid')
+    public function tasksUsingQuery(
+        $workspaceGid,
+        $query = '',
+        $limit = 100,
+        $fields = 'name,notes,html_notes,completed,projects.gid')
     {
         try {
             $tasks = $this->client()->typeahead->typeaheadForWorkspace($workspaceGid, [

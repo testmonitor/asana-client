@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - PHP 8.2 support
 
 ### Updated
+- Managing tasks
 - Add message to UnauthorizedException
 
 ### Removed

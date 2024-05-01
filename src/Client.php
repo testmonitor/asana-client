@@ -106,16 +106,16 @@ class Client
      *
      * @return \TestMonitor\Asana\AccessToken
      */
-    public function refreshToken(): AccessToken
+    public function refreshToken(): ?AccessToken
     {
         if (empty($this->token)) {
-            throw new UnauthorizedException();
+            throw new UnauthorizedException('Invalid access token');
         }
 
         try {
             $accessToken = $this->dispatcher->refreshAccessToken();
-        } catch (Exception $e) {
-            throw new InvalidTokenException($e->getMessage());
+        } catch (Exception $exception) {
+            throw new InvalidTokenException($exception->getMessage(), $exception->getCode(), $exception);
         }
 
         $this->token = new AccessToken(

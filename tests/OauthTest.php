@@ -6,7 +6,6 @@ use Mockery;
 use TestMonitor\Asana\Client;
 use PHPUnit\Framework\TestCase;
 use TestMonitor\Asana\AccessToken;
-use TestMonitor\Asana\Exceptions\InvalidTokenException;
 use TestMonitor\Asana\Exceptions\TokenExpiredException;
 use TestMonitor\Asana\Exceptions\UnauthorizedException;
 
@@ -175,7 +174,7 @@ class OauthTest extends TestCase
 
         $dispatcher->shouldReceive('refreshAccessToken')->once()->andThrow(new \Exception());
 
-        $this->expectException(InvalidTokenException::class);
+        $this->expectException(UnauthorizedException::class);
 
         // When
         $token = $asana->refreshToken();

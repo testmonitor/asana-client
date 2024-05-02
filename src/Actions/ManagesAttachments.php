@@ -5,6 +5,7 @@ namespace TestMonitor\Asana\Actions;
 use Asana\Errors\NotFoundError;
 use Asana\Errors\ForbiddenError;
 use Asana\Errors\InvalidTokenError;
+use Asana\Errors\InvalidRequestError;
 use Asana\Errors\NoAuthorizationError;
 use TestMonitor\Asana\Exceptions\NotFoundException;
 use TestMonitor\Asana\Exceptions\UnauthorizedException;
@@ -38,7 +39,7 @@ trait ManagesAttachments
             return $this->fromAsanaAttachment($attachment);
         } catch (NoAuthorizationError|InvalidTokenError|ForbiddenError $exception) {
             throw new UnauthorizedException($exception->getMessage());
-        } catch (NotFoundError $exception) {
+        } catch (InvalidRequestError|NotFoundError $exception) {
             throw new NotFoundException($exception->getMessage());
         }
     }

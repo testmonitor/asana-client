@@ -13,7 +13,7 @@ trait TransformsTasks
      * @param string $projectGid
      * @return array
      */
-    protected function toAsanaTask(Task $task, string $projectGid = null): array
+    protected function toAsanaTask(Task $task, ?string $projectGid = null): array
     {
         return [
             'completed' => $task->completed,

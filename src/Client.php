@@ -52,9 +52,9 @@ class Client
      */
     public function __construct(
         array $credentials,
-        AccessToken $token = null,
+        ?AccessToken $token = null,
         array $options = [],
-        OAuthDispatcher $dispatcher = null
+        ?OAuthDispatcher $dispatcher = null
     ) {
         $this->token = $token;
 

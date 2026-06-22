@@ -38,7 +38,12 @@
     "config": {
         "optimize-autoloader": true,
         "preferred-install": "dist",
-        "sort-packages": true
+        "sort-packages": true,
+        "audit": {
+            "ignore": [
+                "PKSA-4dtf-ym9h-t41j"
+            ]
+        }
     },
     "autoload": {
         "psr-4": {

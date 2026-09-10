@@ -6,7 +6,7 @@
 [![codecov](https://codecov.io/gh/testmonitor/asana-client/graph/badge.svg?token=MNI8M45RN1)](https://codecov.io/gh/testmonitor/asana-client)
 [![License](https://poser.pugx.org/testmonitor/asana-client/license)](https://packagist.org/packages/testmonitor/asana-client)
 
-This package provides a very basic, convenient, and unified wrapper for the [Official Asana PHP client library](https://github.com/Asana/php-asana).
+This package provides a very basic, convenient, and unified wrapper for [tristan/asana](https://github.com/tristanisham/php-asana), a maintained community replacement for the official Asana PHP client library.
 
 ## Table of Contents
 

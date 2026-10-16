@@ -3,10 +3,10 @@
 namespace TestMonitor\Asana\Tests;
 
 use Mockery;
-use PHPUnit\Framework\Attributes\Test;
 use TestMonitor\Asana\Client;
 use PHPUnit\Framework\TestCase;
 use TestMonitor\Asana\AccessToken;
+use PHPUnit\Framework\Attributes\Test;
 use TestMonitor\Asana\Exceptions\TokenExpiredException;
 use TestMonitor\Asana\Exceptions\UnauthorizedException;
 

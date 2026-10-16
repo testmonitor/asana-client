@@ -4,11 +4,11 @@ namespace TestMonitor\Asana\Tests;
 
 use Mockery;
 use TestMonitor\Asana\Client;
-use PHPUnit\Framework\Attributes\Test;
 use Asana\Errors\NotFoundError;
 use PHPUnit\Framework\TestCase;
 use TestMonitor\Asana\Resources\Task;
 use Asana\Errors\NoAuthorizationError;
+use PHPUnit\Framework\Attributes\Test;
 use TestMonitor\Asana\Exceptions\NotFoundException;
 use TestMonitor\Asana\Exceptions\UnauthorizedException;
 

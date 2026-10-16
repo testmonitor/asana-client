@@ -5,6 +5,7 @@ namespace TestMonitor\Asana\Tests;
 use Mockery;
 use TestMonitor\Asana\Client;
 use Asana\Errors\NotFoundError;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use Asana\Errors\NoAuthorizationError;
 use TestMonitor\Asana\Resources\Workspace;
@@ -42,7 +43,7 @@ class WorkspacesTest extends TestCase
         Mockery::close();
     }
 
-    /** @test */
+    #[Test]
     public function it_should_return_a_list_of_workspaces()
     {
         // Given
@@ -66,7 +67,7 @@ class WorkspacesTest extends TestCase
         $this->assertIsArray($workspaces[0]->toArray());
     }
 
-    /** @test */
+    #[Test]
     public function it_should_throw_an_unauthorized_exception_when_client_lacks_authorization_to_get_a_list_of_workspaces()
     {
         // Given
@@ -83,7 +84,7 @@ class WorkspacesTest extends TestCase
         $workspaces = $asana->workspaces();
     }
 
-    /** @test */
+    #[Test]
     public function it_should_return_a_single_workspace()
     {
         // Given
@@ -104,7 +105,7 @@ class WorkspacesTest extends TestCase
         $this->assertEquals($this->workspace->gid, $workspace->gid);
     }
 
-    /** @test */
+    #[Test]
     public function it_should_throw_an_unauthorized_exception_when_client_lacks_authorization_to_get_a_workspace()
     {
         // Given
@@ -121,7 +122,7 @@ class WorkspacesTest extends TestCase
         $workspace = $asana->workspace($this->workspace->gid);
     }
 
-    /** @test */
+    #[Test]
     public function it_should_throw_a_notfound_exception_when_client_cannot_find_workspace()
     {
         // Given

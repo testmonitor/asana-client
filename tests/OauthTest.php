@@ -3,6 +3,7 @@
 namespace TestMonitor\Asana\Tests;
 
 use Mockery;
+use PHPUnit\Framework\Attributes\Test;
 use TestMonitor\Asana\Client;
 use PHPUnit\Framework\TestCase;
 use TestMonitor\Asana\AccessToken;
@@ -16,7 +17,7 @@ class OauthTest extends TestCase
         Mockery::close();
     }
 
-    /** @test */
+    #[Test]
     public function it_should_create_a_token()
     {
         // When
@@ -28,7 +29,7 @@ class OauthTest extends TestCase
         $this->assertFalse($token->expired());
     }
 
-    /** @test */
+    #[Test]
     public function it_should_detect_an_expired_token()
     {
         // Given
@@ -47,7 +48,7 @@ class OauthTest extends TestCase
         $this->assertTrue($expired);
     }
 
-    /** @test */
+    #[Test]
     public function it_should_not_provide_a_client_with_an_expired_token()
     {
         // Given
@@ -63,7 +64,7 @@ class OauthTest extends TestCase
         $asana = $asana->workspaces();
     }
 
-    /** @test */
+    #[Test]
     public function it_should_provide_an_authorization_url()
     {
         // Given
@@ -80,7 +81,7 @@ class OauthTest extends TestCase
         $this->assertEquals('https://asana.authorization.url', $url);
     }
 
-    /** @test */
+    #[Test]
     public function it_should_fetch_a_token()
     {
         // Given
@@ -108,7 +109,7 @@ class OauthTest extends TestCase
         $this->assertEquals($token->refreshToken, $newToken->refreshToken);
     }
 
-    /** @test */
+    #[Test]
     public function it_should_refresh_a_token()
     {
         // Given
@@ -134,7 +135,7 @@ class OauthTest extends TestCase
         $this->assertEquals($token->refreshToken, $newToken->refreshToken);
     }
 
-    /** @test */
+    #[Test]
     public function it_should_not_refresh_a_token_without_a_refresh_token()
     {
         // Given
@@ -146,7 +147,7 @@ class OauthTest extends TestCase
         $asana->refreshToken();
     }
 
-    /** @test */
+    #[Test]
     public function it_should_not_provide_a_client_without_a_token()
     {
         // Given
@@ -158,7 +159,7 @@ class OauthTest extends TestCase
         $asana->workspaces();
     }
 
-    /** @test */
+    #[Test]
     public function it_should_throw_an_exception_when_refreshing_a_token_fails()
     {
         // Given

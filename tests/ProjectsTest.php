@@ -4,6 +4,7 @@ namespace TestMonitor\Asana\Tests;
 
 use Mockery;
 use TestMonitor\Asana\Client;
+use PHPUnit\Framework\Attributes\Test;
 use Asana\Errors\NotFoundError;
 use PHPUnit\Framework\TestCase;
 use Asana\Errors\NoAuthorizationError;
@@ -46,7 +47,7 @@ class ProjectsTest extends TestCase
         Mockery::close();
     }
 
-    /** @test */
+    #[Test]
     public function it_should_return_a_list_of_projects()
     {
         // Given
@@ -69,7 +70,7 @@ class ProjectsTest extends TestCase
         $this->assertEquals($this->project->gid, $projects[0]->gid);
     }
 
-    /** @test */
+    #[Test]
     public function it_should_throw_an_unauthorized_exception_when_client_lacks_authorization_to_get_a_list_of_projects()
     {
         // Given
@@ -86,7 +87,7 @@ class ProjectsTest extends TestCase
         $projects = $asana->projects($this->workspace->gid);
     }
 
-    /** @test */
+    #[Test]
     public function it_should_throw_a_notfound_exception_when_client_cannot_get_a_list_of_projects_for_an_unknown_workspace()
     {
         // Given
@@ -103,7 +104,7 @@ class ProjectsTest extends TestCase
         $projects = $asana->projects('unknown');
     }
 
-    /** @test */
+    #[Test]
     public function it_should_return_a_single_project()
     {
         // Given
@@ -124,7 +125,7 @@ class ProjectsTest extends TestCase
         $this->assertEquals($this->project->gid, $project->gid);
     }
 
-    /** @test */
+    #[Test]
     public function it_should_throw_an_unauthorized_exception_when_client_lacks_authorization_to_get_a_project()
     {
         // Given
@@ -141,7 +142,7 @@ class ProjectsTest extends TestCase
         $project = $asana->project($this->project->gid);
     }
 
-    /** @test */
+    #[Test]
     public function it_should_throw_a_notfound_exception_when_client_cannot_find_project()
     {
         // Given

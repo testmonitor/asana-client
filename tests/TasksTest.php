@@ -4,6 +4,7 @@ namespace TestMonitor\Asana\Tests;
 
 use Mockery;
 use TestMonitor\Asana\Client;
+use PHPUnit\Framework\Attributes\Test;
 use Asana\Errors\NotFoundError;
 use PHPUnit\Framework\TestCase;
 use TestMonitor\Asana\Resources\Task;
@@ -51,7 +52,7 @@ class TasksTest extends TestCase
         Mockery::close();
     }
 
-    /** @test */
+    #[Test]
     public function it_should_return_a_list_of_tasks()
     {
         // Given
@@ -74,7 +75,7 @@ class TasksTest extends TestCase
         $this->assertEquals($this->task->gid, $tasks[0]->gid);
     }
 
-    /** @test */
+    #[Test]
     public function it_should_throw_an_unauthorized_exception_when_client_lacks_authorization_to_get_a_list_of_tasks()
     {
         // Given
@@ -92,7 +93,7 @@ class TasksTest extends TestCase
         $tasks = $asana->tasks($this->project->gid);
     }
 
-    /** @test */
+    #[Test]
     public function it_should_throw_a_notfound_exception_when_client_cannot_get_a_list_of_tasks_for_an_unknown_workspace()
     {
         // Given
@@ -110,7 +111,7 @@ class TasksTest extends TestCase
         $tasks = $asana->tasks('unknown');
     }
 
-    /** @test */
+    #[Test]
     public function it_should_return_a_list_of_tasks_by_using_a_query()
     {
         // Given
@@ -138,7 +139,7 @@ class TasksTest extends TestCase
         $this->assertEquals($this->task->gid, $tasks[0]->gid);
     }
 
-    /** @test */
+    #[Test]
     public function it_should_throw_an_unauthorized_exception_when_client_lacks_authorization_to_get_a_list_of_tasks_by_using_a_query()
     {
         // Given
@@ -160,7 +161,7 @@ class TasksTest extends TestCase
         $tasks = $asana->tasksUsingQuery($this->workspace->gid);
     }
 
-    /** @test */
+    #[Test]
     public function it_should_throw_a_notfound_exception_when_client_cannot_get_a_list_of_tasks_for_an_unknown_workspace_by_using_a_query()
     {
         // Given
@@ -182,7 +183,7 @@ class TasksTest extends TestCase
         $tasks = $asana->tasksUsingQuery('unknown');
     }
 
-    /** @test */
+    #[Test]
     public function it_should_return_a_single_task()
     {
         // Given
@@ -203,7 +204,7 @@ class TasksTest extends TestCase
         $this->assertEquals($this->task->gid, $task->gid);
     }
 
-    /** @test */
+    #[Test]
     public function it_should_throw_an_unauthorized_exception_when_client_lacks_authorization_to_get_a_task()
     {
         // Given
@@ -221,7 +222,7 @@ class TasksTest extends TestCase
         $task = $asana->task($this->task->gid);
     }
 
-    /** @test */
+    #[Test]
     public function it_should_throw_a_notfound_exception_when_client_cannot_find_task()
     {
         // Given
@@ -239,7 +240,7 @@ class TasksTest extends TestCase
         $asana->task('unknown');
     }
 
-    /** @test */
+    #[Test]
     public function it_should_create_a_task()
     {
         // Given
@@ -270,7 +271,7 @@ class TasksTest extends TestCase
         $this->assertEquals($this->task->gid, $task->gid);
     }
 
-    /** @test */
+    #[Test]
     public function it_should_throw_an_unauthorized_exception_when_client_lacks_authorization_to_create_a_task()
     {
         // Given
@@ -298,7 +299,7 @@ class TasksTest extends TestCase
         ]), $this->project->gid);
     }
 
-    /** @test */
+    #[Test]
     public function it_should_throw_a_notfound_exception_when_client_cannot_find_project_to_create_task_in()
     {
         // Given

@@ -6,6 +6,7 @@ use Mockery;
 use Asana\Errors\NotFoundError;
 use PHPUnit\Framework\TestCase;
 use Asana\Errors\NoAuthorizationError;
+use PHPUnit\Framework\Attributes\Test;
 use TestMonitor\Asana\Resources\Attachment;
 use TestMonitor\Asana\Exceptions\NotFoundException;
 use TestMonitor\Asana\Exceptions\UnauthorizedException;
@@ -31,7 +32,7 @@ class AttachmentsTest extends TestCase
         Mockery::close();
     }
 
-    /** @test */
+    #[Test]
     public function it_should_add_an_attachment_to_a_task()
     {
         // Given
@@ -55,7 +56,7 @@ class AttachmentsTest extends TestCase
         $this->assertEquals($this->attachment->name, $attachment->name);
     }
 
-    /** @test */
+    #[Test]
     public function it_should_throw_an_unauthorized_exception_when_client_lacks_authorization_to_add_an_attachment()
     {
         // Given
@@ -75,7 +76,7 @@ class AttachmentsTest extends TestCase
         $attachment = $asana->addAttachment(__DIR__ . '/files/logo.png', '12345');
     }
 
-    /** @test */
+    #[Test]
     public function it_should_throw_a_notfound_exception_when_client_cannot_find_task_to_add_attachment_to()
     {
         // Given
